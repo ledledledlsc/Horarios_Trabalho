@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Horários de Trabalho Dinâmicos</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 700px;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+  }
+  .semana {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px 0;
+  }
+  .separador {
+    height: 20px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Horários de Trabalho</h1>
+
+<table id="tabela-horarios">
+  <tbody>
+    <!-- Conteúdo gerado pelo JavaScript -->
+  </tbody>
+</table>
+
+<script>
+  // Estrutura do JSON recebida: array de semanas, cada semana é array de objetos (linha da tabela)
+  const horarios = [
+    [
+      {"JUNHO SEMANA 25": "16-jun", "": "17-jun", "__1": "18-jun", "__2": "19-jun", "__3": "20-jun", "__4": "21-jun", "__5": "22-jun"},
+      {"JUNHO SEMANA 25": "8h-17h", "": "Escola", "__1": "8h-17h", "__2": "8h-17h", "__3": "8h-17h", "__4": "LIBRE", "__5": "LIBRE"}
+    ],
+    [
+      {"JUNHO SEMANA 26": "23-jun", "": "24-jun", "__1": "25-jun", "__2": "26-jun", "__3": "27-jun", "__4": "28-jun", "__5": "29-jun"},
+      {"JUNHO SEMANA 26": "Feriado", "": "Escola", "__1": "8h-17h", "__2": "8h-17h", "__3": "8h-17h", "__4": "LIBRE", "__5": "LIBRE"}
+    ],
+    [
+      {"JUNHO SEMANA 27": "30-jun", "": "01-jul", "__1": "02-jul", "__2": "03-jul", "__3": "04-jul", "__4": "05-jul", "__5": "06-jul"},
+      {"JUNHO SEMANA 27": "10-16H", "": "Escola", "__1": "6:30-13H", "__2": "12-19H", "__3": "6:30-13H", "__4": "12:30-19H", "__5": "LIBRE"}
+    ]
+  ];
+
+  const tbody = document.querySelector("#tabela-horarios tbody");
+
+  horarios.forEach(semana => {
+    // 1. Obter o nome da semana (ex: "JUNHO SEMANA 25") - está na chave do primeiro objeto da semana
+    const nomeSemana = Object.keys(semana[0])[0];
+
+    // 2. Criar a linha do título da semana (com colspan = 7)
+    const trSemana = document.createElement("tr");
+    const tdSemana = document.createElement("td");
+    tdSemana.colSpan = 7;
+    tdSemana.className = "semana";
+    tdSemana.textContent = nomeSemana;
+    trSemana.appendChild(tdSemana);
+    tbody.appendChild(trSemana);
+
+    // 3. Criar linha das datas
+    const trDatas = document.createElement("tr");
+    Object.values(semana[0]).forEach(data => {
+      const td = document.createElement("td");
+      td.textContent = data;
+      trDatas.appendChild(td);
+    });
+    tbody.appendChild(trDatas);
+
+    // 4. Criar linha dos horários
+    const trHorarios = document.createElement("tr");
+    Object.values(semana[1]).forEach(horario => {
+      const td = document.createElement("td");
+      td.textContent = horario;
+      trHorarios.appendChild(td);
+    });
+    tbody.appendChild(trHorarios);
+
+    // 5. Linha separadora
+    const trSep = document.createElement("tr");
+    const tdSep = document.createElement("td");
+    tdSep.colSpan = 7;
+    tdSep.className = "separador";
+    trSep.appendChild(tdSep);
+    tbody.appendChild(trSep);
+  });
+</script>
+
+</body>
+</html>
