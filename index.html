@@ -1,48 +1,60 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Horários de Trabalho Dinâmicos</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-  }
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    max-width: 700px;
-  }
-  th, td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: center;
-  }
-  .semana {
-    background-color: #007bff; /* azul */
-    color: white;
-    font-weight: bold;
-    text-align: center;
-    padding: 12px 0;
-    font-size: 1.1em;
-  }
-  .separador {
-    height: 20px;
-  }
-  /* Destaque para LIBRE */
-  .libre {
-    background-color: #d4edda;
-    color: #155724;
-    font-weight: bold;
-  }
-  /* Destaque para Feriado */
-  .feriado {
-    background-color: #f8d7da;
-    color: #721c24;
-    font-weight: bold;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Horários de Trabalho Dinâmicos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 700px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    .semana {
+      background-color: #007bff;
+      color: white;
+      font-weight: bold;
+      text-align: center;
+      padding: 12px 0;
+      font-size: 1.1em;
+    }
+    .separador {
+      height: 20px;
+    }
+    .libre {
+      background-color: #6c757d;
+      color: white;
+    }
+    .feriado {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    .escola {
+      background-color: #e0e0e0;
+      color: #333;
+    }
+    .verde {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .azul {
+      background-color: #d0ebff;
+      color: #004085;
+    }
+    .vermelho {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+  </style>
 </head>
 <body>
 
@@ -75,7 +87,7 @@
   horarios.forEach(semana => {
     const nomeSemana = Object.keys(semana[0])[0];
 
-    // Linha título da semana
+    // Título da semana
     const trSemana = document.createElement("tr");
     const tdSemana = document.createElement("td");
     tdSemana.colSpan = 7;
@@ -84,7 +96,7 @@
     trSemana.appendChild(tdSemana);
     tbody.appendChild(trSemana);
 
-    // Linha datas
+    // Linha de datas
     const trDatas = document.createElement("tr");
     Object.values(semana[0]).forEach(data => {
       const td = document.createElement("td");
@@ -93,25 +105,33 @@
     });
     tbody.appendChild(trDatas);
 
-    // Linha horários
+    // Linha de horários
     const trHorarios = document.createElement("tr");
     Object.values(semana[1]).forEach(horario => {
       const td = document.createElement("td");
       td.textContent = horario;
 
-      // Adicionar classe para LIBRE ou Feriado para cor
-      if (horario.toLowerCase() === "libre") {
+      const texto = horario.toLowerCase();
+
+      if (texto.includes("libre")) {
         td.classList.add("libre");
-      }
-      if (horario.toLowerCase() === "feriado") {
+      } else if (texto.includes("feriado")) {
         td.classList.add("feriado");
+      } else if (texto.includes("escola")) {
+        td.classList.add("escola");
+      } else if (texto === "8h-17h") {
+        td.classList.add("verde");
+      } else if (texto === "10-16h") {
+        td.classList.add("azul");
+      } else if (texto === "12-19h") {
+        td.classList.add("vermelho");
       }
 
       trHorarios.appendChild(td);
     });
     tbody.appendChild(trHorarios);
 
-    // Linha separadora
+    // Separador
     const trSep = document.createElement("tr");
     const tdSep = document.createElement("td");
     tdSep.colSpan = 7;
