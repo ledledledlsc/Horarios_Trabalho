@@ -20,14 +20,27 @@
     text-align: center;
   }
   .semana {
-    background-color: #007bff;
+    background-color: #007bff; /* azul */
     color: white;
     font-weight: bold;
     text-align: center;
-    padding: 10px 0;
+    padding: 12px 0;
+    font-size: 1.1em;
   }
   .separador {
     height: 20px;
+  }
+  /* Destaque para LIBRE */
+  .libre {
+    background-color: #d4edda;
+    color: #155724;
+    font-weight: bold;
+  }
+  /* Destaque para Feriado */
+  .feriado {
+    background-color: #f8d7da;
+    color: #721c24;
+    font-weight: bold;
   }
 </style>
 </head>
@@ -42,7 +55,6 @@
 </table>
 
 <script>
-  // Estrutura do JSON recebida: array de semanas, cada semana é array de objetos (linha da tabela)
   const horarios = [
     [
       {"JUNHO SEMANA 25": "16-jun", "": "17-jun", "__1": "18-jun", "__2": "19-jun", "__3": "20-jun", "__4": "21-jun", "__5": "22-jun"},
@@ -61,10 +73,9 @@
   const tbody = document.querySelector("#tabela-horarios tbody");
 
   horarios.forEach(semana => {
-    // 1. Obter o nome da semana (ex: "JUNHO SEMANA 25") - está na chave do primeiro objeto da semana
     const nomeSemana = Object.keys(semana[0])[0];
 
-    // 2. Criar a linha do título da semana (com colspan = 7)
+    // Linha título da semana
     const trSemana = document.createElement("tr");
     const tdSemana = document.createElement("td");
     tdSemana.colSpan = 7;
@@ -73,7 +84,7 @@
     trSemana.appendChild(tdSemana);
     tbody.appendChild(trSemana);
 
-    // 3. Criar linha das datas
+    // Linha datas
     const trDatas = document.createElement("tr");
     Object.values(semana[0]).forEach(data => {
       const td = document.createElement("td");
@@ -82,16 +93,25 @@
     });
     tbody.appendChild(trDatas);
 
-    // 4. Criar linha dos horários
+    // Linha horários
     const trHorarios = document.createElement("tr");
     Object.values(semana[1]).forEach(horario => {
       const td = document.createElement("td");
       td.textContent = horario;
+
+      // Adicionar classe para LIBRE ou Feriado para cor
+      if (horario.toLowerCase() === "libre") {
+        td.classList.add("libre");
+      }
+      if (horario.toLowerCase() === "feriado") {
+        td.classList.add("feriado");
+      }
+
       trHorarios.appendChild(td);
     });
     tbody.appendChild(trHorarios);
 
-    // 5. Linha separadora
+    // Linha separadora
     const trSep = document.createElement("tr");
     const tdSep = document.createElement("td");
     tdSep.colSpan = 7;
