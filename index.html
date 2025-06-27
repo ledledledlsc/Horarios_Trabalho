@@ -4,28 +4,34 @@
   <meta charset="UTF-8">
   <title>Horário Semanal</title>
   <style>
-  body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-  }
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    margin-bottom: 40px;
-  }
-  th, td {
-    border: 1px solid black;
-    padding: 8px;
-  }
-  .green     { background-color: #27ae60; color: white; }
-  .red       { background-color: #e74c3c; color: white; }
-  .gray      { background-color: #bdc3c7; color: black; }
-  .darkgray  { background-color: #2c3e50; color: white; }
-  h2 {
-    margin-top: 40px;
-  }
-</style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
 
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      table-layout: fixed; /* colunas iguais */
+      margin-bottom: 40px;
+    }
+
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      width: 14.28%;
+      word-wrap: break-word;
+    }
+
+    .green     { background-color: #27ae60; color: white; }
+    .red       { background-color: #e74c3c; color: white; }
+    .gray      { background-color: #bdc3c7; color: black; }
+    .darkgray  { background-color: #2c3e50; color: white; }
+
+    h2 {
+      margin-top: 40px;
+    }
+  </style>
 </head>
 <body>
 
@@ -35,7 +41,13 @@
       <th>23-jun</th><th>24-jun</th><th>25-jun</th><th>26-jun</th><th>27-jun</th><th>28-jun</th><th>29-jun</th>
     </tr>
     <tr>
-      <td class="red">Feriado</td><td class="gray">Escola</td><td class="green">8h-17h</td><td class="green">8h-17h</td><td class="green">8h-17h</td><td class="darkgray">LIBRE</td><td class="darkgray">LIBRE</td>
+      <td class="red">Feriado</td>
+      <td class="gray">Escola</td>
+      <td class="green">8h-17h</td>
+      <td class="green">8h-17h</td>
+      <td class="green">8h-17h</td>
+      <td class="darkgray">LIBRE</td>
+      <td class="darkgray">LIBRE</td>
     </tr>
   </table>
 
@@ -45,7 +57,13 @@
       <th>30-jun</th><th>01-jul</th><th>02-jul</th><th>03-jul</th><th>04-jul</th><th>05-jul</th><th>06-jul</th>
     </tr>
     <tr>
-      <td class="red">12-19H</td><td class="gray">Escola</td><td class="red">12:30-19H</td><td class="red">12:30-19H</td><td class="green">9:15H</td><td class="green">9:15H</td><td class="darkgray">LIBRE</td>
+      <td class="red">12-19H</td>
+      <td class="gray">Escola</td>
+      <td class="red">12:30-19H</td>
+      <td class="red">12:30-19H</td>
+      <td class="green">9:15H</td>
+      <td class="green">9:15H</td>
+      <td class="darkgray">LIBRE</td>
     </tr>
   </table>
 
@@ -55,7 +73,13 @@
       <th>07-jul</th><th>08-jul</th><th>09-jul</th><th>10-jul</th><th>11-jul</th><th>12-jul</th><th>13-jul</th>
     </tr>
     <tr>
-      <td class="green">6:30-13H</td><td class="gray">Escola</td><td class="green">6:30-13H</td><td class="green">6:30-13H</td><td class="red">13-19:30H</td><td class="red">13-19:30H</td><td class="darkgray">LIBRE</td>
+      <td class="green">6:30-13H</td>
+      <td class="gray">Escola</td>
+      <td class="green">6:30-13H</td>
+      <td class="green">6:30-13H</td>
+      <td class="red">13-19:30H</td>
+      <td class="red">13-19:30H</td>
+      <td class="darkgray">LIBRE</td>
     </tr>
   </table>
 
