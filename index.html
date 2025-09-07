@@ -29,6 +29,13 @@
     .darkgray  { background-color: #2c3e50; color: white; }
     .blue      { background-color: #3498db; color: white; }
 
+    /* destaque do dia atual */
+    .today {
+      border: 3px solid orange;
+      text-decoration: underline;
+      font-weight: bold;
+    }
+
     h2 {
       margin-top: 40px;
     }
@@ -36,10 +43,28 @@
 </head>
 <body>
 
+  <h2>SETEMBRO SEMANA 36</h2>
+  <table>
+    <tr>
+      <th id="01-09">01/set</th><th id="02-09">02/set</th><th id="03-09">03/set</th>
+      <th id="04-09">04/set</th><th id="05-09">05/set</th><th id="06-09">06/set</th><th id="07-09">07/set</th>
+    </tr>
+    <tr>
+      <td class="blue">10-16H</td>
+      <td class="blue">10-17H</td>
+      <td class="blue">8-16H</td>
+      <td class="green">10-15H</td>
+      <td class="green">8-15H</td>
+      <td class="green">9-16H</td>
+      <td class="darkgray">LIBRE</td>
+    </tr>
+  </table>
+
   <h2>SETEMBRO SEMANA 37</h2>
   <table>
     <tr>
-      <th>08/set</th><th>09/set</th><th>10/set</th><th>11/set</th><th>12/set</th><th>13/set</th><th>14/set</th>
+      <th id="08-09">08/set</th><th id="09-09">09/set</th><th id="10-09">10/set</th>
+      <th id="11-09">11/set</th><th id="12-09">12/set</th><th id="13-09">13/set</th><th id="14-09">14/set</th>
     </tr>
     <tr>
       <td class="green">7-14H</td>
@@ -55,7 +80,8 @@
   <h2>SETEMBRO SEMANA 38</h2>
   <table>
     <tr>
-      <th>15/set</th><th>16/set</th><th>17/set</th><th>18/set</th><th>19/set</th><th>20/set</th><th>21/set</th>
+      <th id="15-09">15/set</th><th id="16-09">16/set</th><th id="17-09">17/set</th>
+      <th id="18-09">18/set</th><th id="19-09">19/set</th><th id="20-09">20/set</th><th id="21-09">21/set</th>
     </tr>
     <tr>
       <td class="blue">10-16H</td>
@@ -67,6 +93,22 @@
       <td class="darkgray">LIBRE</td>
     </tr>
   </table>
+
+  <script>
+    // Obter a data atual
+    const hoje = new Date();
+    const dia = String(hoje.getDate()).padStart(2, '0');
+    const mes = String(hoje.getMonth() + 1).padStart(2, '0'); // mês começa em 0
+
+    // Criar o ID no formato dd-mm
+    const idHoje = dia + "-" + mes;
+
+    // Procurar o cabeçalho da tabela com esse ID
+    const thHoje = document.getElementById(idHoje);
+    if (thHoje) {
+      thHoje.classList.add("today");
+    }
+  </script>
 
 </body>
 </html>
