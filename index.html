@@ -53,6 +53,20 @@ let semanas = [];
 let semanaAtual = 0;
 let linhasCache = [];
 
+function classificarHorario(horario){
+    horario = horario.toLowerCase().replace('h','').replace(' ',''); 
+    const parts = horario.split('-');
+    if(parts.length !== 2) return ''; 
+
+    let inicio = parseFloat(parts[0].replace(':','.')); 
+    let fim    = parseFloat(parts[1].replace(':','.')); 
+
+    if(inicio >= 12 && fim <= 20) return 'red';   // tarde
+    if(inicio >= 5  && fim <= 13) return 'green'; // manhã
+    if(inicio >= 10 && fim <= 17) return 'blue';  // dia
+    return ''; 
+}
+
 async function carregarCSV() {
   const res = await fetch(GITHUB_CSV_URL);
   const text = await res.text();
@@ -71,9 +85,9 @@ async function carregarCSV() {
     } else i++;
   }
 
-  // Encontrar semana atual pelo dia de hoje
+  // Encontrar semana atual
   const hoje = new Date();
-  hoje.setHours(0,0,0,0); // normalizar
+  hoje.setHours(0,0,0,0);
   for(let s=0;s<semanas.length;s++){
     const semana = semanas[s];
     const linhaDatas = linhasCache[semana.start+1];
@@ -124,21 +138,11 @@ function mostrarSemana(index){
     td.textContent = celula;
 
     const valor = celula.toLowerCase();
-
-    // Mapeamento de horários aproximados para cores e nomes
-    if(valor.includes('7-17') || valor.includes('10-17')){
-      td.classList.add('blue'); // dia
-    } else if(valor.includes('7-13') || valor.includes('6:30-12') || valor.includes('8-13') || valor.includes('7-12:30')){
-      td.classList.add('green'); // manhã
-    } else if(valor.includes('13-20')){
-      td.classList.add('red'); // tarde
-    } else if(valor.includes('escola')){
-      td.classList.add('gray');
-    } else if(valor.includes('feriado')){
-      td.classList.add('red');
-    } else if(valor.includes('libre')){
-      td.classList.add('darkgray');
-    }
+    const cor = classificarHorario(celula);
+    if(cor) td.classList.add(cor);
+    else if(valor.includes('escola')) td.classList.add('gray');
+    else if(valor.includes('feriado')) td.classList.add('red');
+    else if(valor.includes('libre')) td.classList.add('darkgray');
 
     // Destacar dia atual
     const dataCelula = new Date(linhaDatas[j]);
