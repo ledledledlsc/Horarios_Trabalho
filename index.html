@@ -6,17 +6,21 @@
 <style>
   body {
     font-family: Arial, sans-serif;
-    background: #f8f9fa;
+    background: #f0f2f5;
     text-align: center;
     padding: 20px;
   }
-  #semanaTitulo {
-    font-size: 26px;
+  h1 {
     color: #007bff;
     margin-bottom: 10px;
   }
+  #semanaTitulo {
+    font-size: 26px;
+    color: #333;
+    margin-bottom: 15px;
+  }
   .buttons {
-    margin: 15px 0;
+    margin-bottom: 20px;
   }
   button {
     margin: 5px;
@@ -34,28 +38,59 @@
   table {
     border-collapse: collapse;
     width: 100%;
-    max-width: 700px;
-    margin: 0 auto 40px;
-    background: white;
+    max-width: 800px;
+    margin: 0 auto 30px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    background: white;
   }
   th, td {
-    border: 1px solid black;
-    padding: 8px;
+    border: 1px solid #ccc;
+    padding: 12px;
     width: 14.28%;
     word-wrap: break-word;
+    font-size: 16px;
+  }
+  th {
+    background: #e9ecef;
   }
 
+  /* Cores dos horários */
   .green     { background-color: #27ae60; color: white; }
   .red       { background-color: #e74c3c; color: white; }
   .gray      { background-color: #bdc3c7; color: black; }
   .darkgray  { background-color: #2c3e50; color: white; }
   .blue      { background-color: #3498db; color: white; }
 
-  .today { border: 3px solid orange; text-decoration: underline; font-weight: bold; }
+  /* Dia atual */
+  .today {
+    border: 3px solid orange;
+    font-weight: bold;
+    text-decoration: underline;
+  }
+
+  /* Legenda */
+  #legenda {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    gap: 15px;
+  }
+  .itemLegenda {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+  }
+  .colorBox {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    border-radius: 3px;
+  }
 
   @media(max-width: 600px) {
-    th, td { font-size: 14px; padding: 6px; }
+    th, td { font-size: 14px; padding: 8px; }
     #semanaTitulo { font-size: 20px; }
     button { font-size: 14px; padding: 8px 12px; }
   }
@@ -65,10 +100,20 @@
 
 <h1>Horários de Trabalho</h1>
 <div id="semanaTitulo"></div>
+
 <div class="buttons">
   <button id="prevWeek">Semana anterior</button>
   <button id="nextWeek">Próxima semana</button>
 </div>
+
+<div id="legenda">
+  <div class="itemLegenda"><span class="colorBox blue"></span> Turno completo</div>
+  <div class="itemLegenda"><span class="colorBox green"></span> Meio turno</div>
+  <div class="itemLegenda"><span class="colorBox gray"></span> Escola</div>
+  <div class="itemLegenda"><span class="colorBox red"></span> Feriado</div>
+  <div class="itemLegenda"><span class="colorBox darkgray"></span> Livre</div>
+</div>
+
 <table id="horarios">
   <tbody></tbody>
 </table>
@@ -79,19 +124,17 @@ let semanas = [];
 let semanaAtual = 0;
 let linhasCache = [];
 
-// Carregar CSV e detectar semanas
 async function carregarCSV() {
   const res = await fetch(GITHUB_CSV_URL);
   const text = await res.text();
   linhasCache = text.split('\n').map(l => l.split(','));
 
-  // Detectar semanas
   semanas = [];
   let i = 0;
   while(i < linhasCache.length) {
     if(linhasCache[i][0] && linhasCache[i][0].toUpperCase().includes('SEMANA')) {
       let start = i;
-      let end = start + 2; // título + datas + horários
+      let end = start + 2;
       while(end + 1 < linhasCache.length && linhasCache[end + 1][0] && !linhasCache[end + 1][0].toUpperCase().includes('SEMANA')) {
         end++;
       }
@@ -104,13 +147,10 @@ async function carregarCSV() {
   mostrarSemana(semanaAtual);
 }
 
-// Mostrar semana no site
 function mostrarSemana(index) {
   const tbody = document.querySelector('#horarios tbody');
   tbody.innerHTML = '';
   const semana = semanas[index];
-
-  // Título centrado
   document.getElementById('semanaTitulo').textContent = linhasCache[semana.start][0];
 
   for(let i = semana.start + 1; i <= semana.end; i++) {
@@ -119,7 +159,6 @@ function mostrarSemana(index) {
       const td = document.createElement(i === semana.start + 1 ? 'th' : 'td');
       td.textContent = celula;
 
-      // Aplica cores conforme o texto
       const valor = celula.toLowerCase();
       if(valor.includes('libre')) td.classList.add('darkgray');
       else if(valor.includes('escola')) td.classList.add('gray');
@@ -127,10 +166,10 @@ function mostrarSemana(index) {
       else if(valor.includes('7-17') || valor.includes('10-17') || valor.includes('13-20')) td.classList.add('blue');
       else if(valor.includes('7-13') || valor.includes('6:30-12') || valor.includes('8-13') || valor.includes('7-12:30')) td.classList.add('green');
 
-      // Destacar o dia atual
+      // Dia atual
       if(i === semana.start + 2) {
         const hoje = new Date();
-        const diaHoje = `${hoje.getDate()}-${hoje.getMonth()+1}`.padStart(5,'0');
+        const diaHoje = `${hoje.getDate()}-${hoje.getMonth()+1}`;
         if(td.textContent.includes(diaHoje)) td.classList.add('today');
       }
 
@@ -140,7 +179,6 @@ function mostrarSemana(index) {
   }
 }
 
-// Botões
 document.getElementById('prevWeek').addEventListener('click', () => {
   if(semanaAtual > 0) semanaAtual--;
   mostrarSemana(semanaAtual);
@@ -150,7 +188,6 @@ document.getElementById('nextWeek').addEventListener('click', () => {
   mostrarSemana(semanaAtual);
 });
 
-// Inicializar
 carregarCSV();
 </script>
 
