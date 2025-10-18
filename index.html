@@ -35,10 +35,10 @@
 </div>
 
 <div id="legenda">
-  <div class="itemLegenda"><span class="colorBox blue"></span> Turno completo</div>
-  <div class="itemLegenda"><span class="colorBox green"></span> Meio turno</div>
+  <div class="itemLegenda"><span class="colorBox blue"></span> dia</div>
+  <div class="itemLegenda"><span class="colorBox green"></span> manhã</div>
+  <div class="itemLegenda"><span class="colorBox red"></span> tarde</div>
   <div class="itemLegenda"><span class="colorBox gray"></span> Escola</div>
-  <div class="itemLegenda"><span class="colorBox red"></span> Feriado</div>
   <div class="itemLegenda"><span class="colorBox darkgray"></span> Livre</div>
 </div>
 
@@ -124,11 +124,21 @@ function mostrarSemana(index){
     td.textContent = celula;
 
     const valor = celula.toLowerCase();
-    if(valor.includes('libre')) td.classList.add('darkgray');
-    else if(valor.includes('escola')) td.classList.add('gray');
-    else if(valor.includes('feriado')) td.classList.add('red');
-    else if(valor.includes('7-17') || valor.includes('10-17') || valor.includes('13-20')) td.classList.add('blue');
-    else if(valor.includes('7-13') || valor.includes('6:30-12') || valor.includes('8-13') || valor.includes('7-12:30')) td.classList.add('green');
+
+    // Mapeamento de horários aproximados para cores e nomes
+    if(valor.includes('7-17') || valor.includes('10-17')){
+      td.classList.add('blue'); // dia
+    } else if(valor.includes('7-13') || valor.includes('6:30-12') || valor.includes('8-13') || valor.includes('7-12:30')){
+      td.classList.add('green'); // manhã
+    } else if(valor.includes('13-20')){
+      td.classList.add('red'); // tarde
+    } else if(valor.includes('escola')){
+      td.classList.add('gray');
+    } else if(valor.includes('feriado')){
+      td.classList.add('red');
+    } else if(valor.includes('libre')){
+      td.classList.add('darkgray');
+    }
 
     // Destacar dia atual
     const dataCelula = new Date(linhaDatas[j]);
