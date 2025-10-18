@@ -11,7 +11,7 @@
   button { margin: 5px; padding: 10px 15px; font-size: 16px; border-radius: 5px; border: none; background: #007bff; color: white; cursor: pointer; transition: 0.2s; }
   button:hover { background: #0056b3; }
   table { border-collapse: collapse; width: 100%; max-width: 800px; margin: 0 auto 30px; box-shadow: 0 0 10px rgba(0,0,0,0.1); background: white; }
-  th, td { border: 1px solid #ccc; padding: 12px; width: 20%; word-wrap: break-word; font-size: 16px; }
+  th, td { border: 1px solid #ccc; padding: 12px; width: 14.28%; word-wrap: break-word; font-size: 16px; }
   th { background: #e9ecef; }
   .green { background-color: #27ae60; color: white; }
   .red { background-color: #e74c3c; color: white; }
@@ -23,7 +23,9 @@
   #legenda { display: flex; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; gap: 15px; }
   .itemLegenda { display: flex; align-items: center; gap: 5px; font-size: 14px; }
   .colorBox { width: 20px; height: 20px; display: inline-block; border-radius: 3px; }
-  @media(max-width: 600px) { th, td { font-size: 14px; padding: 8px; } #semanaTitulo { font-size: 20px; } button { font-size: 14px; padding: 8px 12px; } }
+  #miniLabels { display:flex; justify-content:center; gap:5px; margin-bottom:5px; flex-wrap: wrap; }
+  #miniLabels span { display:inline-block; width:80px; height:20px; line-height:20px; text-align:center; font-size:12px; border-radius:3px; color:white; }
+  @media(max-width: 600px) { th, td { font-size: 14px; padding: 8px; } #semanaTitulo { font-size: 20px; } button { font-size: 14px; padding: 8px 12px; } #miniLabels span { width:60px; font-size:10px; } }
 </style>
 </head>
 <body>
@@ -34,6 +36,8 @@
   <button id="prevWeek">Semana anterior</button>
   <button id="nextWeek">Próxima semana</button>
 </div>
+
+<div id="miniLabels"></div>
 
 <div id="legenda">
   <div class="itemLegenda"><span class="colorBox blue"></span> dia</div>
@@ -113,36 +117,44 @@ function mostrarSemana(index){
   const semana = semanas[index];
   document.getElementById('semanaTitulo').textContent = linhasCache[semana.start][0];
 
-  const trHead = document.createElement('tr');
   const linhaDatas = linhasCache[semana.start+1];
-  linhaDatas.forEach((celula,j)=>{
+  const linhaHorarios = linhasCache[semana.start+2];
+
+  // Mini Labels
+  const miniLabels = document.getElementById('miniLabels');
+  miniLabels.innerHTML = '';
+  linhaHorarios.forEach(celula => {
+      const span = document.createElement('span');
+      const cor = classificarHorario(celula);
+      if(cor === 'blue-dark') { span.style.backgroundColor = '#1d4e89'; span.textContent = 'Chambre de commerce'; }
+      else if(cor === 'blue') { span.style.backgroundColor = '#3498db'; span.textContent = 'Dia'; }
+      else if(cor === 'green') { span.style.backgroundColor = '#27ae60'; span.textContent = 'Manhã'; }
+      else if(cor === 'red') { span.style.backgroundColor = '#e74c3c'; span.textContent = 'Tarde'; }
+      else { span.style.backgroundColor = '#ccc'; span.textContent = ''; }
+      miniLabels.appendChild(span);
+  });
+
+  // Cabeçalho da tabela
+  const trHead = document.createElement('tr');
+  linhaDatas.forEach(celula=>{
+    const th = document.createElement('th');
     const data = new Date(celula);
     if(!isNaN(data)){
-      const diaSemanaNum = data.getDay();
-      if(diaSemanaNum === 0 || diaSemanaNum === 6) return; // Ignorar domingo e sábado
-      const diaSemana = diasSemana[diaSemanaNum];
+      const diaSemana = diasSemana[data.getDay()];
       const diaMes = data.getDate();
       const mes = meses[data.getMonth()];
-      const th = document.createElement('th');
       th.textContent = `${diaSemana} ${diaMes}/${mes}`;
-      trHead.appendChild(th);
-    }
+    } else th.textContent = celula;
+    trHead.appendChild(th);
   });
   tbody.appendChild(trHead);
 
+  // Linha de horários
   const trHorario = document.createElement('tr');
-  const linhaHorarios = linhasCache[semana.start+2];
-  const hoje = new Date();
-  hoje.setHours(0,0,0,0);
-
+  const hoje = new Date(); hoje.setHours(0,0,0,0);
   linhaHorarios.forEach((celula,j)=>{
-    const data = new Date(linhaDatas[j]);
-    const diaSemanaNum = data.getDay();
-    if(diaSemanaNum === 0 || diaSemanaNum === 6) return; // Ignorar fim de semana
-
     const td = document.createElement('td');
     td.textContent = celula;
-
     const valor = celula.toLowerCase();
     const cor = classificarHorario(celula);
     if(cor) td.classList.add(cor);
@@ -150,15 +162,17 @@ function mostrarSemana(index){
     else if(valor.includes('feriado')) td.classList.add('red');
     else if(valor.includes('libre')) td.classList.add('darkgray');
 
-    if(data.getTime() === hoje.getTime()){
+    const dataCelula = new Date(linhaDatas[j]);
+    dataCelula.setHours(0,0,0,0);
+    if(dataCelula.getTime() === hoje.getTime()){
       td.classList.add('today');
     }
-
     trHorario.appendChild(td);
   });
   tbody.appendChild(trHorario);
 }
 
+// Botões
 document.getElementById('prevWeek').addEventListener('click',()=>{
   if(semanaAtual>0) semanaAtual--;
   mostrarSemana(semanaAtual);
