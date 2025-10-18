@@ -56,7 +56,6 @@ let semanaAtual = 0;
 let linhasCache = [];
 
 function classificarHorario(horario){
-    // Padronizar formato
     horario = horario.replace(/\s/g,'').replace(/h/gi,''); 
     const parts = horario.split('-');
     if(parts.length !== 2) return ''; 
@@ -64,7 +63,6 @@ function classificarHorario(horario){
     let inicio = parseFloat(parts[0].replace(':','.')); 
     let fim    = parseFloat(parts[1].replace(':','.')); 
 
-    // Regras
     if(inicio === 7 && fim === 17) return 'blue-dark';       // Chambre de commerce
     if(inicio >= 12 && fim <= 20) return 'red';             // tarde
     if(inicio >= 5 && fim <= 13) return 'green';            // manhã
@@ -147,12 +145,8 @@ function mostrarSemana(index){
 
     const valor = celula.toLowerCase();
     const cor = classificarHorario(celula);
-    if(cor === 'blue-dark') {
-      td.classList.add(cor);
-      td.textContent = 'Chambre de commerce';
-    } else if(cor) {
-      td.classList.add(cor);
-    } else if(valor.includes('escola')) td.classList.add('gray');
+    if(cor) td.classList.add(cor);
+    else if(valor.includes('escola')) td.classList.add('gray');
     else if(valor.includes('feriado')) td.classList.add('red');
     else if(valor.includes('libre')) td.classList.add('darkgray');
 
@@ -167,4 +161,14 @@ function mostrarSemana(index){
 
 document.getElementById('prevWeek').addEventListener('click',()=>{
   if(semanaAtual>0) semanaAtual--;
- 
+  mostrarSemana(semanaAtual);
+});
+document.getElementById('nextWeek').addEventListener('click',()=>{
+  if(semanaAtual<semanas.length-1) semanaAtual++;
+  mostrarSemana(semanaAtual);
+});
+
+carregarCSV();
+</script>
+</body>
+</html>
