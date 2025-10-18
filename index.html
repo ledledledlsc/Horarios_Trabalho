@@ -2,112 +2,101 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <title>Horário Semanal</title>
+  <title>Horários de Trabalho</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-    }
-
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      table-layout: fixed;
-      margin-bottom: 40px;
-    }
-
-    th, td {
-      border: 1px solid black;
-      padding: 8px;
-      width: 14.28%;
-      word-wrap: break-word;
-    }
-
-    .green     { background-color: #27ae60; color: white; }
-    .red       { background-color: #e74c3c; color: white; }
-    .gray      { background-color: #bdc3c7; color: black; }
-    .darkgray  { background-color: #2c3e50; color: white; }
-    .blue      { background-color: #3498db; color: white; }
-
-    .today {
-      border: 3px solid orange;
-      text-decoration: underline;
-      font-weight: bold;
-    }
-
-    h2 {
-      margin-top: 40px;
-    }
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    th { background-color: #f4f4f4; }
+    .highlight { background-color: yellow; }
+    button { margin: 5px; padding: 10px 15px; font-size: 16px; }
   </style>
 </head>
 <body>
-
-  <h2>OUTUBRO SEMANA 42</h2>
-  <table>
-    <tr>
-      <th id="13-10">13/out</th><th id="14-10">14/out</th><th id="15-10">15/out</th>
-      <th id="16-10">16/out</th><th id="17-10">17/out</th><th id="18-10">18/out</th><th id="19-10">19/out</th>
-    </tr>
-    <tr>
-      <td class="blue">7-17H</td>
-      <td class="green">7-13H</td>
-      <td class="gray">Escola</td>
-      <td class="green">8-13H</td>
-      <td class="blue">10-17H</td>
-      <td class="green">7-13H</td>
-      <td class="darkgray">LIBRE</td>
-    </tr>
-  </table>
-
-  <h2>OUTUBRO SEMANA 43</h2>
-  <table>
-    <tr>
-      <th id="20-10">20/out</th><th id="21-10">21/out</th><th id="22-10">22/out</th>
-      <th id="23-10">23/out</th><th id="24-10">24/out</th><th id="25-10">25/out</th><th id="26-10">26/out</th>
-    </tr>
-    <tr>
-      <td class="blue">7-17H</td>
-      <td class="green">6:30-12H</td>
-      <td class="gray">Escola</td>
-      <td class="green">7-13H</td>
-      <td class="green">7-13H</td>
-      <td class="green">7-12:30H</td>
-      <td class="darkgray">LIBRE</td>
-    </tr>
-  </table>
-
-  <h2>OUTUBRO / NOVEMBRO SEMANA 44</h2>
-  <table>
-    <tr>
-      <th id="27-10">27/out</th><th id="28-10">28/out</th><th id="29-10">29/out</th>
-      <th id="30-10">30/out</th><th id="31-10">31/out</th><th id="01-11">01/nov</th><th id="02-11">02/nov</th>
-    </tr>
-    <tr>
-      <td class="blue">7-17H</td>
-      <td class="darkgray">LIBRE</td>
-      <td class="gray">Escola</td>
-      <td class="red">13-20H</td>
-      <td class="red">13-20H</td>
-      <td class="red">Feriado</td>
-      <td class="darkgray">LIBRE</td>
-    </tr>
+  <h1>Horários de Trabalho</h1>
+  <div>
+    <button id="prevWeek">Semana anterior</button>
+    <button id="nextWeek">Próxima semana</button>
+  </div>
+  <table id="horarios">
+    <tbody></tbody>
   </table>
 
   <script>
-    const hoje = new Date();
-    const dia = String(hoje.getDate()).padStart(2, '0');
-    const mes = String(hoje.getMonth() + 1).padStart(2, '0');
-    const idHoje = `${dia}-${mes}`;
+    const GITHUB_CSV_URL = 'https://raw.githubusercontent.com/ledledledlsc/Horarios_Trabalho/main/Horarios_Trabalho.csv';
+    let semanas = [];
+    let semanaAtual = 0;
 
-    // tenta marcar o dia exato
-    const thHoje = document.getElementById(idHoje);
-    if (thHoje) {
-      thHoje.classList.add("today");
-    } else {
-      // se o ID não existir (por exemplo, ainda não tem tabela daquele mês)
-      console.log("Dia atual não encontrado nas semanas exibidas:", idHoje);
+    async function carregarCSV() {
+      const res = await fetch(GITHUB_CSV_URL);
+      const text = await res.text();
+      const linhas = text.split('\n').map(l => l.split(','));
+
+      // Detectar semanas
+      semanas = [];
+      let i = 0;
+      while(i < linhas.length) {
+        if(linhas[i][0] && linhas[i][0].toUpperCase().includes('SEMANA')) {
+          let start = i;
+          let end = start + 2; // título + datas + horários
+          while(end + 1 < linhas.length && linhas[end + 1][0] && !linhas[end + 1][0].toUpperCase().includes('SEMANA')) {
+            end++;
+          }
+          semanas.push({start, end});
+          i = end + 1;
+        } else {
+          i++;
+        }
+      }
+
+      mostrarSemana(semanaAtual, linhas);
     }
-  </script>
 
+    function mostrarSemana(index, linhas) {
+      const tbody = document.querySelector('#horarios tbody');
+      tbody.innerHTML = '';
+
+      const semana = semanas[index];
+      for(let i = semana.start; i <= semana.end; i++) {
+        const tr = document.createElement('tr');
+        linhas[i].forEach((celula, j) => {
+          const td = document.createElement(i === semana.start ? 'th' : 'td');
+          td.textContent = celula;
+
+          // Destacar dia atual na linha de horários
+          if(i === semana.start + 2) {
+            const hoje = new Date();
+            const diaHoje = `${hoje.getDate()}-${hoje.toLocaleString('pt-PT',{month:'short'})}`.toLowerCase();
+            if(celula.toLowerCase().includes(diaHoje)) {
+              td.classList.add('highlight');
+            }
+          }
+
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      }
+    }
+
+    document.getElementById('prevWeek').addEventListener('click', () => {
+      if(semanaAtual > 0) semanaAtual--;
+      carregarCSV().then(() => mostrarSemana(semanaAtual, linhasCache));
+    });
+
+    document.getElementById('nextWeek').addEventListener('click', () => {
+      if(semanaAtual < semanas.length - 1) semanaAtual++;
+      carregarCSV().then(() => mostrarSemana(semanaAtual, linhasCache));
+    });
+
+    let linhasCache = [];
+    async function iniciar() {
+      const res = await fetch(GITHUB_CSV_URL);
+      const text = await res.text();
+      linhasCache = text.split('\n').map(l => l.split(','));
+      carregarCSV();
+    }
+
+    iniciar();
+  </script>
 </body>
 </html>
