@@ -29,7 +29,6 @@
     .darkgray  { background-color: #2c3e50; color: white; }
     .blue      { background-color: #3498db; color: white; }
 
-    /* destaque do dia atual */
     .today {
       border: 3px solid orange;
       text-decoration: underline;
@@ -42,23 +41,6 @@
   </style>
 </head>
 <body>
-
-  <h2>OUTUBRO SEMANA 41</h2>
-  <table>
-    <tr>
-      <th id="06-10">06/out</th><th id="07-10">07/out</th><th id="08-10">08/out</th>
-      <th id="09-10">09/out</th><th id="10-10">10/out</th><th id="11-10">11/out</th><th id="12-10">12/out</th>
-    </tr>
-    <tr>
-      <td class="green">5-12H</td>
-      <td class="green">7-13H</td>
-      <td class="gray">Escola</td>
-      <td class="green">7-13H</td>
-      <td class="green">9-16H</td>
-      <td class="green">7-13H</td>
-      <td class="darkgray">LIBRE</td>
-    </tr>
-  </table>
 
   <h2>OUTUBRO SEMANA 42</h2>
   <table>
@@ -77,19 +59,53 @@
     </tr>
   </table>
 
+  <h2>OUTUBRO SEMANA 43</h2>
+  <table>
+    <tr>
+      <th id="20-10">20/out</th><th id="21-10">21/out</th><th id="22-10">22/out</th>
+      <th id="23-10">23/out</th><th id="24-10">24/out</th><th id="25-10">25/out</th><th id="26-10">26/out</th>
+    </tr>
+    <tr>
+      <td class="blue">7-17H</td>
+      <td class="green">6:30-12H</td>
+      <td class="gray">Escola</td>
+      <td class="green">7-13H</td>
+      <td class="green">7-13H</td>
+      <td class="green">7-12:30H</td>
+      <td class="darkgray">LIBRE</td>
+    </tr>
+  </table>
+
+  <h2>OUTUBRO / NOVEMBRO SEMANA 44</h2>
+  <table>
+    <tr>
+      <th id="27-10">27/out</th><th id="28-10">28/out</th><th id="29-10">29/out</th>
+      <th id="30-10">30/out</th><th id="31-10">31/out</th><th id="01-11">01/nov</th><th id="02-11">02/nov</th>
+    </tr>
+    <tr>
+      <td class="blue">7-17H</td>
+      <td class="darkgray">LIBRE</td>
+      <td class="gray">Escola</td>
+      <td class="red">13-20H</td>
+      <td class="red">13-20H</td>
+      <td class="red">Feriado</td>
+      <td class="darkgray">LIBRE</td>
+    </tr>
+  </table>
+
   <script>
-    // Obter a data atual
     const hoje = new Date();
     const dia = String(hoje.getDate()).padStart(2, '0');
-    const mes = String(hoje.getMonth() + 1).padStart(2, '0'); // mês começa em 0
+    const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+    const idHoje = `${dia}-${mes}`;
 
-    // Criar o ID no formato dd-mm
-    const idHoje = dia + "-" + mes;
-
-    // Procurar o cabeçalho da tabela com esse ID
+    // tenta marcar o dia exato
     const thHoje = document.getElementById(idHoje);
     if (thHoje) {
       thHoje.classList.add("today");
+    } else {
+      // se o ID não existir (por exemplo, ainda não tem tabela daquele mês)
+      console.log("Dia atual não encontrado nas semanas exibidas:", idHoje);
     }
   </script>
 
