@@ -61,9 +61,6 @@ function classificarHorario(horario){
     let inicio = parseFloat(parts[0].replace(':','.')); 
     let fim    = parseFloat(parts[1].replace(':','.')); 
 
-    // Regra explícita para 7-17
-    if(inicio === 7 && fim === 17) return 'blue'; // dia
-
     if(inicio >= 12 && fim <= 20) return 'red';          // tarde
     if(inicio >= 5  && fim <= 13) return 'green';       // manhã
     if(inicio <= 7 && fim <= 17) return 'blue';        // dia
