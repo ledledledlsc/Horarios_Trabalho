@@ -23,9 +23,7 @@
   #legenda { display: flex; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; gap: 15px; }
   .itemLegenda { display: flex; align-items: center; gap: 5px; font-size: 14px; }
   .colorBox { width: 20px; height: 20px; display: inline-block; border-radius: 3px; }
-  #miniLabels { display:flex; justify-content:center; gap:5px; margin-bottom:5px; flex-wrap: wrap; }
-  #miniLabels span { display:inline-block; width:80px; height:20px; line-height:20px; text-align:center; font-size:12px; border-radius:3px; color:white; }
-  @media(max-width: 600px) { th, td { font-size: 14px; padding: 8px; } #semanaTitulo { font-size: 20px; } button { font-size: 14px; padding: 8px 12px; } #miniLabels span { width:60px; font-size:10px; } }
+  @media(max-width: 600px) { th, td { font-size: 14px; padding: 8px; } #semanaTitulo { font-size: 20px; } button { font-size: 14px; padding: 8px 12px; } }
 </style>
 </head>
 <body>
@@ -36,8 +34,6 @@
   <button id="prevWeek">Semana anterior</button>
   <button id="nextWeek">Próxima semana</button>
 </div>
-
-<div id="miniLabels"></div>
 
 <div id="legenda">
   <div class="itemLegenda"><span class="colorBox blue"></span> dia</div>
@@ -119,20 +115,6 @@ function mostrarSemana(index){
 
   const linhaDatas = linhasCache[semana.start+1];
   const linhaHorarios = linhasCache[semana.start+2];
-
-  // Mini Labels
-  const miniLabels = document.getElementById('miniLabels');
-  miniLabels.innerHTML = '';
-  linhaHorarios.forEach(celula => {
-      const span = document.createElement('span');
-      const cor = classificarHorario(celula);
-      if(cor === 'blue-dark') { span.style.backgroundColor = '#1d4e89'; span.textContent = 'Chambre de commerce'; }
-      else if(cor === 'blue') { span.style.backgroundColor = '#3498db'; span.textContent = 'Dia'; }
-      else if(cor === 'green') { span.style.backgroundColor = '#27ae60'; span.textContent = 'Manhã'; }
-      else if(cor === 'red') { span.style.backgroundColor = '#e74c3c'; span.textContent = 'Tarde'; }
-      else { span.style.backgroundColor = '#ccc'; span.textContent = ''; }
-      miniLabels.appendChild(span);
-  });
 
   // Cabeçalho da tabela
   const trHead = document.createElement('tr');
