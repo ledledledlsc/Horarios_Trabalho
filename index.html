@@ -56,17 +56,20 @@ let semanaAtual = 0;
 let linhasCache = [];
 
 function classificarHorario(horario){
-    horario = horario.toLowerCase().replace('h','').replace(' ',''); 
+    // Padronizar formato
+    horario = horario.replace(/\s/g,'').replace(/h/gi,''); 
     const parts = horario.split('-');
     if(parts.length !== 2) return ''; 
 
     let inicio = parseFloat(parts[0].replace(':','.')); 
     let fim    = parseFloat(parts[1].replace(':','.')); 
 
-    if(inicio === 7 && fim === 17) return 'blue-dark';    // chambre de commerce
-    if(inicio >= 12 && fim <= 20) return 'red';          // tarde
-    if(inicio >= 5  && fim <= 13) return 'green';       // manhã
-    if(inicio <= 10 && fim <= 17) return 'blue';        // dia
+    // Regras
+    if(inicio === 7 && fim === 17) return 'blue-dark';       // Chambre de commerce
+    if(inicio >= 12 && fim <= 20) return 'red';             // tarde
+    if(inicio >= 5 && fim <= 13) return 'green';            // manhã
+    if(inicio >= 10 && fim <= 17) return 'blue';            // dia
+
     return ''; 
 }
 
@@ -164,14 +167,4 @@ function mostrarSemana(index){
 
 document.getElementById('prevWeek').addEventListener('click',()=>{
   if(semanaAtual>0) semanaAtual--;
-  mostrarSemana(semanaAtual);
-});
-document.getElementById('nextWeek').addEventListener('click',()=>{
-  if(semanaAtual<semanas.length-1) semanaAtual++;
-  mostrarSemana(semanaAtual);
-});
-
-carregarCSV();
-</script>
-</body>
-</html>
+ 
