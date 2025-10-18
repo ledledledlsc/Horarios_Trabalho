@@ -4,103 +4,31 @@
 <meta charset="UTF-8">
 <title>Horários de Trabalho</title>
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #f0f2f5;
-    text-align: center;
-    padding: 20px;
-  }
-  h1 {
-    color: #007bff;
-    margin-bottom: 10px;
-  }
-  #semanaTitulo {
-    font-size: 26px;
-    color: #333;
-    margin-bottom: 15px;
-  }
-  .buttons {
-    margin-bottom: 20px;
-  }
-  button {
-    margin: 5px;
-    padding: 10px 15px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: none;
-    background: #007bff;
-    color: white;
-    cursor: pointer;
-    transition: 0.2s;
-  }
+  body { font-family: Arial, sans-serif; background: #f0f2f5; text-align: center; padding: 20px; }
+  h1 { color: #007bff; margin-bottom: 10px; }
+  #semanaTitulo { font-size: 26px; color: #333; margin-bottom: 15px; }
+  .buttons { margin-bottom: 20px; }
+  button { margin: 5px; padding: 10px 15px; font-size: 16px; border-radius: 5px; border: none; background: #007bff; color: white; cursor: pointer; transition: 0.2s; }
   button:hover { background: #0056b3; }
-
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto 30px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    background: white;
-  }
-  th, td {
-    border: 1px solid #ccc;
-    padding: 12px;
-    width: 14.28%;
-    word-wrap: break-word;
-    font-size: 16px;
-  }
-  th {
-    background: #e9ecef;
-  }
-
-  /* Cores dos horários */
-  .green     { background-color: #27ae60; color: white; }
-  .red       { background-color: #e74c3c; color: white; }
-  .gray      { background-color: #bdc3c7; color: black; }
-  .darkgray  { background-color: #2c3e50; color: white; }
-  .blue      { background-color: #3498db; color: white; }
-
-  /* Dia atual */
-  .today {
-    border: 3px solid orange;
-    font-weight: bold;
-    text-decoration: underline;
-  }
-
-  /* Legenda */
-  #legenda {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
-    gap: 15px;
-  }
-  .itemLegenda {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 14px;
-  }
-  .colorBox {
-    width: 20px;
-    height: 20px;
-    display: inline-block;
-    border-radius: 3px;
-  }
-
-  @media(max-width: 600px) {
-    th, td { font-size: 14px; padding: 8px; }
-    #semanaTitulo { font-size: 20px; }
-    button { font-size: 14px; padding: 8px 12px; }
-  }
+  table { border-collapse: collapse; width: 100%; max-width: 800px; margin: 0 auto 30px; box-shadow: 0 0 10px rgba(0,0,0,0.1); background: white; }
+  th, td { border: 1px solid #ccc; padding: 12px; width: 14.28%; word-wrap: break-word; font-size: 16px; }
+  th { background: #e9ecef; }
+  .green { background-color: #27ae60; color: white; }
+  .red { background-color: #e74c3c; color: white; }
+  .gray { background-color: #bdc3c7; color: black; }
+  .darkgray { background-color: #2c3e50; color: white; }
+  .blue { background-color: #3498db; color: white; }
+  .today { border: 4px solid orange; font-weight: bold; text-decoration: underline; }
+  #legenda { display: flex; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; gap: 15px; }
+  .itemLegenda { display: flex; align-items: center; gap: 5px; font-size: 14px; }
+  .colorBox { width: 20px; height: 20px; display: inline-block; border-radius: 3px; }
+  @media(max-width: 600px) { th, td { font-size: 14px; padding: 8px; } #semanaTitulo { font-size: 20px; } button { font-size: 14px; padding: 8px 12px; } }
 </style>
 </head>
 <body>
 
 <h1>Horários de Trabalho</h1>
 <div id="semanaTitulo"></div>
-
 <div class="buttons">
   <button id="prevWeek">Semana anterior</button>
   <button id="nextWeek">Próxima semana</button>
@@ -114,12 +42,13 @@
   <div class="itemLegenda"><span class="colorBox darkgray"></span> Livre</div>
 </div>
 
-<table id="horarios">
-  <tbody></tbody>
-</table>
+<table id="horarios"><tbody></tbody></table>
 
 <script>
 const GITHUB_CSV_URL = 'https://raw.githubusercontent.com/ledledledlsc/Horarios_Trabalho/main/Horarios_Trabalho.csv';
+const diasSemana = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+const meses = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+
 let semanas = [];
 let semanaAtual = 0;
 let linhasCache = [];
@@ -129,67 +58,101 @@ async function carregarCSV() {
   const text = await res.text();
   linhasCache = text.split('\n').map(l => l.split(','));
 
+  // Detectar semanas
   semanas = [];
   let i = 0;
   while(i < linhasCache.length) {
     if(linhasCache[i][0] && linhasCache[i][0].toUpperCase().includes('SEMANA')) {
       let start = i;
       let end = start + 2;
-      while(end + 1 < linhasCache.length && linhasCache[end + 1][0] && !linhasCache[end + 1][0].toUpperCase().includes('SEMANA')) {
-        end++;
-      }
-      semanas.push({start, end});
+      while(end + 1 < linhasCache.length && linhasCache[end + 1][0] && !linhasCache[end + 1][0].toUpperCase().includes('SEMANA')) end++;
+      semanas.push({start,end});
       i = end + 1;
-    } else {
-      i++;
+    } else i++;
+  }
+
+  // Encontrar semana atual pelo dia de hoje
+  const hoje = new Date();
+  hoje.setHours(0,0,0,0); // normalizar
+  for(let s=0;s<semanas.length;s++){
+    const semana = semanas[s];
+    const linhaDatas = linhasCache[semana.start+1];
+    if(linhaDatas.some(celula=>{
+      const data = new Date(celula);
+      if(isNaN(data)) return false;
+      data.setHours(0,0,0,0);
+      return data.getTime() === hoje.getTime();
+    })){
+      semanaAtual = s;
+      break;
     }
   }
+
   mostrarSemana(semanaAtual);
 }
 
-function mostrarSemana(index) {
+function mostrarSemana(index){
   const tbody = document.querySelector('#horarios tbody');
-  tbody.innerHTML = '';
+  tbody.innerHTML='';
   const semana = semanas[index];
   document.getElementById('semanaTitulo').textContent = linhasCache[semana.start][0];
 
-  for(let i = semana.start + 1; i <= semana.end; i++) {
-    const tr = document.createElement('tr');
-    linhasCache[i].forEach((celula, j) => {
-      const td = document.createElement(i === semana.start + 1 ? 'th' : 'td');
-      td.textContent = celula;
+  // Cabeçalho com dias em português
+  const trHead = document.createElement('tr');
+  const linhaDatas = linhasCache[semana.start+1];
+  linhaDatas.forEach((celula,j)=>{
+    const td = document.createElement('th');
+    const data = new Date(celula);
+    if(!isNaN(data)){
+      const diaSemana = diasSemana[data.getDay()];
+      const diaMes = data.getDate();
+      const mes = meses[data.getMonth()];
+      td.textContent = `${diaSemana} ${diaMes}/${mes}`;
+    } else td.textContent = celula;
+    trHead.appendChild(td);
+  });
+  tbody.appendChild(trHead);
 
-      const valor = celula.toLowerCase();
-      if(valor.includes('libre')) td.classList.add('darkgray');
-      else if(valor.includes('escola')) td.classList.add('gray');
-      else if(valor.includes('feriado')) td.classList.add('red');
-      else if(valor.includes('7-17') || valor.includes('10-17') || valor.includes('13-20')) td.classList.add('blue');
-      else if(valor.includes('7-13') || valor.includes('6:30-12') || valor.includes('8-13') || valor.includes('7-12:30')) td.classList.add('green');
+  // Linha de horários
+  const trHorario = document.createElement('tr');
+  const linhaHorarios = linhasCache[semana.start+2];
+  const hoje = new Date();
+  hoje.setHours(0,0,0,0);
 
-      // Dia atual
-      if(i === semana.start + 2) {
-        const hoje = new Date();
-        const diaHoje = `${hoje.getDate()}-${hoje.getMonth()+1}`;
-        if(td.textContent.includes(diaHoje)) td.classList.add('today');
-      }
+  linhaHorarios.forEach((celula,j)=>{
+    const td = document.createElement('td');
+    td.textContent = celula;
 
-      tr.appendChild(td);
-    });
-    tbody.appendChild(tr);
-  }
+    const valor = celula.toLowerCase();
+    if(valor.includes('libre')) td.classList.add('darkgray');
+    else if(valor.includes('escola')) td.classList.add('gray');
+    else if(valor.includes('feriado')) td.classList.add('red');
+    else if(valor.includes('7-17') || valor.includes('10-17') || valor.includes('13-20')) td.classList.add('blue');
+    else if(valor.includes('7-13') || valor.includes('6:30-12') || valor.includes('8-13') || valor.includes('7-12:30')) td.classList.add('green');
+
+    // Destacar dia atual
+    const dataCelula = new Date(linhaDatas[j]);
+    dataCelula.setHours(0,0,0,0);
+    if(dataCelula.getTime() === hoje.getTime()){
+      td.classList.add('today');
+    }
+
+    trHorario.appendChild(td);
+  });
+  tbody.appendChild(trHorario);
 }
 
-document.getElementById('prevWeek').addEventListener('click', () => {
-  if(semanaAtual > 0) semanaAtual--;
+// Botões
+document.getElementById('prevWeek').addEventListener('click',()=>{
+  if(semanaAtual>0) semanaAtual--;
   mostrarSemana(semanaAtual);
 });
-document.getElementById('nextWeek').addEventListener('click', () => {
-  if(semanaAtual < semanas.length - 1) semanaAtual++;
+document.getElementById('nextWeek').addEventListener('click',()=>{
+  if(semanaAtual<semanas.length-1) semanaAtual++;
   mostrarSemana(semanaAtual);
 });
 
 carregarCSV();
 </script>
-
 </body>
 </html>
