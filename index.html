@@ -11,7 +11,7 @@
   button { margin: 5px; padding: 10px 15px; font-size: 16px; border-radius: 5px; border: none; background: #007bff; color: white; cursor: pointer; transition: 0.2s; }
   button:hover { background: #0056b3; }
   table { border-collapse: collapse; width: 100%; max-width: 800px; margin: 0 auto 30px; box-shadow: 0 0 10px rgba(0,0,0,0.1); background: white; }
-  th, td { border: 1px solid #ccc; padding: 12px; width: 14.28%; word-wrap: break-word; font-size: 16px; }
+  th, td { border: 1px solid #ccc; padding: 12px; width: 20%; word-wrap: break-word; font-size: 16px; }
   th { background: #e9ecef; }
   .green { background-color: #27ae60; color: white; }
   .red { background-color: #e74c3c; color: white; }
@@ -63,9 +63,7 @@ function classificarHorario(horario){
     let inicio = parseFloat(parts[0].replace(':','.')); 
     let fim    = parseFloat(parts[1].replace(':','.')); 
 
-    // Apenas o 7-17H especial
-    if(inicio === 7 && fim === 17) return 'blue-dark'; 
-
+    if(inicio === 7 && fim === 17) return 'blue-dark';    // chambre de commerce
     if(inicio >= 12 && fim <= 20) return 'red';          // tarde
     if(inicio >= 5  && fim <= 13) return 'green';       // manhã
     if(inicio <= 10 && fim <= 17) return 'blue';        // dia
@@ -73,11 +71,10 @@ function classificarHorario(horario){
 }
 
 async function carregarCSV() {
-  const res = await fetch(GITHUB_CSV_URL);
+  const res = await fetch(GITHUB_CSV_URL + '?cache=' + new Date().getTime());
   const text = await res.text();
   linhasCache = text.split('\n').map(l => l.split(','));
 
-  // Detectar semanas
   semanas = [];
   let i = 0;
   while(i < linhasCache.length) {
@@ -90,7 +87,6 @@ async function carregarCSV() {
     } else i++;
   }
 
-  // Encontrar semana atual
   const hoje = new Date();
   hoje.setHours(0,0,0,0);
   for(let s=0;s<semanas.length;s++){
@@ -116,29 +112,33 @@ function mostrarSemana(index){
   const semana = semanas[index];
   document.getElementById('semanaTitulo').textContent = linhasCache[semana.start][0];
 
-  // Cabeçalho com dias em português
   const trHead = document.createElement('tr');
   const linhaDatas = linhasCache[semana.start+1];
   linhaDatas.forEach((celula,j)=>{
-    const td = document.createElement('th');
     const data = new Date(celula);
     if(!isNaN(data)){
-      const diaSemana = diasSemana[data.getDay()];
+      const diaSemanaNum = data.getDay();
+      if(diaSemanaNum === 0 || diaSemanaNum === 6) return; // Ignorar domingo e sábado
+      const diaSemana = diasSemana[diaSemanaNum];
       const diaMes = data.getDate();
       const mes = meses[data.getMonth()];
-      td.textContent = `${diaSemana} ${diaMes}/${mes}`;
-    } else td.textContent = celula;
-    trHead.appendChild(td);
+      const th = document.createElement('th');
+      th.textContent = `${diaSemana} ${diaMes}/${mes}`;
+      trHead.appendChild(th);
+    }
   });
   tbody.appendChild(trHead);
 
-  // Linha de horários
   const trHorario = document.createElement('tr');
   const linhaHorarios = linhasCache[semana.start+2];
   const hoje = new Date();
   hoje.setHours(0,0,0,0);
 
   linhaHorarios.forEach((celula,j)=>{
+    const data = new Date(linhaDatas[j]);
+    const diaSemanaNum = data.getDay();
+    if(diaSemanaNum === 0 || diaSemanaNum === 6) return; // Ignorar fim de semana
+
     const td = document.createElement('td');
     td.textContent = celula;
 
@@ -153,10 +153,7 @@ function mostrarSemana(index){
     else if(valor.includes('feriado')) td.classList.add('red');
     else if(valor.includes('libre')) td.classList.add('darkgray');
 
-    // Destacar dia atual
-    const dataCelula = new Date(linhaDatas[j]);
-    dataCelula.setHours(0,0,0,0);
-    if(dataCelula.getTime() === hoje.getTime()){
+    if(data.getTime() === hoje.getTime()){
       td.classList.add('today');
     }
 
@@ -165,7 +162,6 @@ function mostrarSemana(index){
   tbody.appendChild(trHorario);
 }
 
-// Botões
 document.getElementById('prevWeek').addEventListener('click',()=>{
   if(semanaAtual>0) semanaAtual--;
   mostrarSemana(semanaAtual);
