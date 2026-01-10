@@ -248,9 +248,13 @@ function inRange(today, start, end){
 }
 
 function parseCSVLines(text){
-  // CSV simples (funciona bem para Sheets)
-  return text.trim().split(/\r?\n/).map(l => l.split(',').map(x => x.replace(/^"|"$/g,'').trim()));
+  return text.trim().split(/\r?\n/).map(line => {
+    // aceita CSV separado por vírgula OU por TAB
+    const sep = line.includes('\t') ? '\t' : ',';
+    return line.split(sep).map(x => x.replace(/^"|"$/g,'').trim());
+  });
 }
+
 
 /* ==========================
    FÉRIAS (AUTO do Sheets)
