@@ -49,25 +49,48 @@
   }
 
   /* cards acima */
-  #feriasAviso, #proximasFerias{
-    display:none;
-    width: 100%;
-    max-width: 900px;
-    margin: 0 auto 12px;
-    padding: 10px 12px;
-    border-radius: 10px;
-    font-weight: bold;
-    opacity: 0;
-    transform: translateY(-6px);
-    transition: opacity .25s ease, transform .25s ease;
-    text-align: center;
-  }
-  #feriasAviso{ background: #fff3cd; border: 1px solid #ffeeba; color: #856404; }
-  #proximasFerias{ background: #eef6ff; border: 1px solid #cfe6ff; color: #1d4e89; }
+#feriasAviso,
+#proximasFerias{
+  display: none;
+  width: 100%;
+  max-width: 900px;
 
-  #feriasAviso.show, #proximasFerias.show{
-    display:block; opacity:1; transform: translateY(0);
-  }
+  /* ✅ centro real em todos os ecrãs */
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 12px;
+
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-weight: bold;
+  text-align: center;
+
+  /* ✅ MUITO importante para mobile */
+  box-sizing: border-box;
+
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity .25s ease, transform .25s ease;
+}
+
+#feriasAviso{
+  background: #fff3cd;
+  border: 1px solid #ffeeba;
+  color: #856404;
+}
+
+#proximasFerias{
+  background: #eef6ff;
+  border: 1px solid #cfe6ff;
+  color: #1d4e89;
+}
+
+#feriasAviso.show,
+#proximasFerias.show{
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
 
   /* ---------- TABELA (DESKTOP) ---------- */
   table {
