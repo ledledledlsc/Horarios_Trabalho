@@ -15,7 +15,6 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 
 <style>
-
   /* background mais bonito */
   body {
     font-family: Arial, sans-serif;
@@ -157,36 +156,14 @@
     box-shadow: 0 10px 30px rgba(0,0,0,0.25);
     color: #000;
   }
-  .modal h3{
-    margin:0 0 10px;
-    font-size: 20px;
-    color: #000;
-  }
-  .modal ul{
-    margin:0 0 12px;
-    padding-left:18px;
-    line-height:1.6;
-  }
-  .modal ul li{
-    color: #000;
-    font-weight: 500;
-    font-size: 15px;
-    margin-bottom: 6px;
-  }
-  .modal .actions{
-    display:flex;
-    justify-content:flex-end;
-    gap:10px;
-  }
-  .btn-close{
-    background:#2c3e50;
-    color: #fff;
-  }
-  .btn-close:hover{
-    background:#1d2a36;
-  }
+  .modal h3{ margin:0 0 10px; font-size: 20px; color:#000; }
+  .modal ul{ margin:0 0 12px; padding-left:18px; line-height:1.6; }
+  .modal ul li{ color:#000; font-weight:500; font-size:15px; margin-bottom:6px; }
+  .modal .actions{ display:flex; justify-content:flex-end; gap:10px; }
+  .btn-close{ background:#2c3e50; color:#fff; }
+  .btn-close:hover{ background:#1d2a36; }
 
-  /* ---------- LOGO NO FUNDO (clicável + adaptativa + animação) ---------- */
+  /* ---------- LOGO NO FUNDO (clicável + animação) ---------- */
   .footer-logo {
     margin-top: 26px;
     padding-top: 14px;
@@ -206,64 +183,61 @@
   }
   .footer-logo img:hover { opacity: 0.85; }
 
-  /* ---------- DICA “Adicionar ao ecrã inicial” (mobile only) ---------- */
-  #a2hsTip {
-    display: none;
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto 14px;
-    background: #ffffff;
-    border: 1px solid rgba(0,0,0,0.08);
-    border-radius: 12px;
-    padding: 12px;
-    text-align: left;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  /* ---------- DICA “Adicionar ao ecrã inicial” (A2HS) ---------- */
+  #a2hsTip{
+    position: fixed;
+    left: 50%;
+    bottom: 14px;
+    transform: translateX(-50%) translateY(20px);
+    width: min(560px, calc(100% - 24px));
+    background: rgba(0,0,0,0.92);
+    color: #fff;
+    border-radius: 14px;
+    padding: 12px 12px;
+    box-shadow: 0 14px 30px rgba(0,0,0,0.35);
     opacity: 0;
-    transform: translateY(-6px);
+    pointer-events: none;
     transition: opacity .25s ease, transform .25s ease;
+    z-index: 10001;
+    text-align: left;
   }
-  #a2hsTip.show { display:block; opacity:1; transform: translateY(0); }
-
-  #a2hsTip .row {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    justify-content: space-between;
+  #a2hsTip.show{
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
   }
-  #a2hsTip .title {
+  #a2hsTip .title{
     font-weight: 800;
-    margin-bottom: 4px;
-    color: #1d4e89;
-  }
-  #a2hsTip .text {
+    margin: 0 0 6px;
     font-size: 14px;
-    color: #333;
-    line-height: 1.35;
   }
-  #a2hsTip .actions {
+  #a2hsText{
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.35;
+    opacity: 0.95;
+  }
+  #a2hsTip .actions{
     display: flex;
     gap: 8px;
-    align-items: center;
-    flex-shrink: 0;
+    margin-top: 10px;
   }
-  #a2hsTip .btn {
-    border: none;
+  #a2hsTip button{
+    border: 0;
     border-radius: 10px;
-    padding: 9px 12px;
-    font-weight: 700;
+    padding: 8px 10px;
+    font-size: 13px;
     cursor: pointer;
-    transition: .2s;
   }
-  #a2hsTip .btn-close {
-    background: #2c3e50;
-    color: white;
+  #a2hsHow{
+    background: #ffcc00;
+    color: #2c3e50;
+    font-weight: 800;
   }
-  #a2hsTip .btn-close:hover { background:#1d2a36; }
-  #a2hsTip .btn-help {
-    background: #007bff;
-    color: white;
+  #a2hsClose{
+    background: rgba(255,255,255,0.14);
+    color: #fff;
   }
-  #a2hsTip .btn-help:hover { background:#0056b3; }
 
   /* 🌙 Modo escuro */
   @media (prefers-color-scheme: dark) {
@@ -283,10 +257,6 @@
 
     .footer-logo.show { opacity: 0.7; }
     .footer-logo img { filter: brightness(1.35) contrast(1.1); }
-
-    #a2hsTip { background:#1f1f1f; border-color: rgba(255,255,255,0.10); }
-    #a2hsTip .text { color:#eaeaea; }
-    #a2hsTip .title { color:#bfe1ff; }
   }
 
   @media(max-width: 600px) {
@@ -299,22 +269,6 @@
 <body>
 
 <h1>Horários de Trabalho</h1>
-
-<!-- DICA: adicionar ao ecrã inicial (aparece só 1 vez no telemóvel) -->
-<div id="a2hsTip">
-  <div class="row">
-    <div>
-      <div class="title">📱 Dica rápida</div>
-      <div class="text" id="a2hsText">
-        Podes adicionar este site ao ecrã inicial para abrir como uma app.
-      </div>
-    </div>
-    <div class="actions">
-      <button class="btn btn-help" id="a2hsHow">Como?</button>
-      <button class="btn btn-close" id="a2hsClose">Fechar</button>
-    </div>
-  </div>
-</div>
 
 <div id="feriasAviso"></div>
 <div id="proximasFerias"></div>
@@ -358,6 +312,16 @@
   </a>
 </div>
 
+<!-- DICA A2HS -->
+<div id="a2hsTip" aria-live="polite">
+  <div class="title">📲 Abrir como App</div>
+  <p id="a2hsText">Dica: adiciona este site ao ecrã inicial para abrir mais rápido.</p>
+  <div class="actions">
+    <button id="a2hsHow">Como fazer?</button>
+    <button id="a2hsClose">OK</button>
+  </div>
+</div>
+
 <script>
 /* ==========================
    LINKS
@@ -398,7 +362,6 @@ function parseCSVLines(text){
   const lines = (text || '').trim().split(/\r?\n/).filter(Boolean);
 
   return lines.map((line) => {
-    // aceita TAB, vírgula e ponto-e-vírgula
     const hasTab = line.includes('\t');
     const hasComma = line.includes(',');
     const hasSemi = line.includes(';');
@@ -414,7 +377,6 @@ function parseCSVLines(text){
 function parseDateSafe(s){
   const t = normalizeCell(s);
   if(!t) return null;
-
   const m = t.match(/^(\d{4})-(\d{2})-(\d{2})$/);
   if(m){
     const y = parseInt(m[1],10), mo = parseInt(m[2],10)-1, d = parseInt(m[3],10);
@@ -422,7 +384,6 @@ function parseDateSafe(s){
     dt.setHours(0,0,0,0);
     return dt;
   }
-
   const dt = new Date(t);
   if(isNaN(dt)) return null;
   dt.setHours(0,0,0,0);
@@ -464,10 +425,7 @@ function parseFeriasCSV(text){
     const startDt  = parseDateSafe(startStr);
     const endDt    = parseDateSafe(endStr);
     return {
-      start: startStr,
-      end: endStr,
-      startDt,
-      endDt,
+      startStr, endStr, startDt, endDt,
       label: idxLabel >= 0 ? normalizeCell(row[idxLabel]) : ''
     };
   }).filter(r => r.startDt && r.endDt);
@@ -480,11 +438,9 @@ function fmtFeriasRange(r){
 function getCurrentVacationRange(today){
   return FERIAS_RANGES.find(r => inRange(today, r.startDt, r.endDt)) || null;
 }
-
 function getVacationForDate(date){
   return FERIAS_RANGES.find(r => inRange(date, r.startDt, r.endDt)) || null;
 }
-
 function getNextVacation(today){
   const t = toDateOnly(today);
   const future = FERIAS_RANGES
@@ -512,12 +468,12 @@ function updateTopCards(){
   const prox  = document.getElementById('proximasFerias');
   const footerLogo = document.getElementById('footerLogo');
 
-  // Render lista no modal
+  // lista no modal
   const ul = document.getElementById('feriasList');
   ul.innerHTML = '';
   if(!FERIAS_RANGES.length){
     const li = document.createElement('li');
-    li.textContent = 'Sem férias encontradas (confirma se o Ferias.csv tem colunas start/end em YYYY-MM-DD).';
+    li.textContent = 'Sem férias encontradas (confirma Ferias.csv).';
     ul.appendChild(li);
   } else {
     FERIAS_RANGES.forEach(r=>{
@@ -530,7 +486,6 @@ function updateTopCards(){
   const current = getCurrentVacationRange(hoje);
   ESTA_DE_FERIAS = !!current;
 
-  // AGORA + aviso
   if(ESTA_DE_FERIAS){
     badge.style.display = 'inline-block';
     aviso.textContent = `🏖️ Estás de férias agora: ${fmtFeriasRange(current)}`;
@@ -553,7 +508,7 @@ function updateTopCards(){
     }
   }
 
-  // Logo com animação (esconde quando férias)
+  // logo animada
   if(footerLogo){
     if(ESTA_DE_FERIAS){
       footerLogo.classList.remove('show');
@@ -580,7 +535,6 @@ function classificarHorario(horario){
   if(inicio >= 12 && fim <= 21) return 'red';
   if(inicio >= 5 && fim <= 13) return 'green';
   if(inicio >= 10 && fim <= 17) return 'blue';
-
   return '';
 }
 
@@ -589,26 +543,22 @@ async function carregarCSV() {
   const text = await res.text();
   linhasCache = text.split('\n').map(l => l.split(','));
 
-  // encontrar blocos SEMANA
   semanas = [];
   let i = 0;
   while(i < linhasCache.length) {
     if(linhasCache[i][0] && linhasCache[i][0].toUpperCase().includes('SEMANA')) {
       let start = i;
       let end = start + 2;
-
       while(end + 1 < linhasCache.length &&
             linhasCache[end + 1][0] &&
             !linhasCache[end + 1][0].toUpperCase().includes('SEMANA')) {
         end++;
       }
-
       semanas.push({start,end});
       i = end + 1;
     } else i++;
   }
 
-  // escolher semana atual
   const hoje = new Date();
   hoje.setHours(0,0,0,0);
   for(let s=0;s<semanas.length;s++){
@@ -647,7 +597,6 @@ function mostrarSemana(index){
   const linhaNotas = linhaNotasRaw ? linhaNotasRaw.map(normalizeCell) : null;
   const temNotas = linhaNotas && linhaNotas.some(c => c && c.length > 0);
 
-  // Cabeçalho
   const trHead = document.createElement('tr');
   linhaDatas.forEach(celula=>{
     const th = document.createElement('th');
@@ -657,18 +606,14 @@ function mostrarSemana(index){
       const diaMes = data.getDate();
       const mes = meses[data.getMonth()];
       th.textContent = `${diaSemana} ${diaMes}/${mes}`;
-    } else {
-      th.textContent = celula;
-    }
+    } else th.textContent = celula;
     trHead.appendChild(th);
   });
   tbody.appendChild(trHead);
 
-  // Linha de horários
   const trHorario = document.createElement('tr');
   const hoje = new Date(); hoje.setHours(0,0,0,0);
 
-  // detectar se todos os dias desta semana são férias
   let totalDiasValidos = 0;
   let diasFerias = 0;
 
@@ -677,6 +622,7 @@ function mostrarSemana(index){
 
     const dataCelula = new Date(linhaDatas[j]);
     const dataOk = !isNaN(dataCelula);
+
     if(dataOk){
       dataCelula.setHours(0,0,0,0);
       totalDiasValidos++;
@@ -689,8 +635,7 @@ function mostrarSemana(index){
         td.title = vac.label ? `Férias: ${vac.label}` : 'Férias';
       } else {
         td.textContent = celula;
-
-        const valor = celula.toLowerCase();
+        const valor = (celula || '').toLowerCase();
         const cor = classificarHorario(celula);
 
         if(cor) td.classList.add(cor);
@@ -710,11 +655,9 @@ function mostrarSemana(index){
   });
   tbody.appendChild(trHorario);
 
-  // Se a semana inteira é férias, dá destaque + aviso
   const semanaInteiraFerias = totalDiasValidos > 0 && diasFerias === totalDiasValidos;
   if(semanaInteiraFerias){
     table.classList.add('weekVacTable');
-
     const aviso = document.getElementById('feriasAviso');
     if(!ESTA_DE_FERIAS){
       aviso.textContent = '🏖️ Esta semana é 100% FÉRIAS.';
@@ -722,7 +665,6 @@ function mostrarSemana(index){
     }
   }
 
-  // Linha de notas
   if(temNotas){
     const trNotas = document.createElement('tr');
     trNotas.classList.add('notesRow');
@@ -737,7 +679,7 @@ function mostrarSemana(index){
 }
 
 /* ==========================
-   BOTÕES (semanas)
+   BOTÕES
 ========================== */
 document.getElementById('prevWeek').addEventListener('click',()=>{
   if(semanaAtual>0) semanaAtual--;
@@ -748,9 +690,7 @@ document.getElementById('nextWeek').addEventListener('click',()=>{
   mostrarSemana(semanaAtual);
 });
 
-/* ==========================
-   BOTÃO FÉRIAS (modal)
-========================== */
+/* popup férias */
 const overlay = document.getElementById('feriasOverlay');
 document.getElementById('feriasBtn').addEventListener('click', ()=>{
   overlay.style.display = 'flex';
@@ -779,13 +719,11 @@ document.addEventListener('keydown', (e)=>{
 function isMobile_(){
   return window.matchMedia("(max-width: 900px)").matches;
 }
-
 function isStandalone_(){
   const dm = window.matchMedia("(display-mode: standalone)").matches;
   const ios = (window.navigator && window.navigator.standalone) === true;
   return dm || ios;
 }
-
 function detectBrowserHint_(){
   const ua = navigator.userAgent || "";
   const isSamsungInternet = /SamsungBrowser/i.test(ua);
@@ -796,7 +734,6 @@ function detectBrowserHint_(){
   if (isSafari) return "iPhone (Safari): Partilhar ⬆️ → “Adicionar ao ecrã principal”.";
   return "No browser: Menu → “Adicionar ao ecrã inicial”.";
 }
-
 function setupA2HSTip_(){
   const tip = document.getElementById("a2hsTip");
   const txt = document.getElementById("a2hsText");
@@ -804,15 +741,10 @@ function setupA2HSTip_(){
   const btnHow = document.getElementById("a2hsHow");
 
   if (!tip || !txt || !btnClose || !btnHow) return;
-
-  // só no telemóvel
   if (!isMobile_()) return;
-
-  // se já estiver “modo app”, não mostrar
   if (isStandalone_()) return;
 
-  // só mostrar 1 vez
-  const key = "a2hs_tip_dismissed_v2";
+  const key = "a2hs_tip_dismissed_v3"; // muda o número se precisares forçar aparecer
   if (localStorage.getItem(key) === "1") return;
 
   tip.classList.add("show");
@@ -832,10 +764,10 @@ function setupA2HSTip_(){
    ARRANQUE
 ========================== */
 (async () => {
-  await carregarFeriasCSV();  // férias primeiro
-  updateTopCards();           // aviso + badge + próximas férias + logo animada
-  await carregarCSV();        // depois horários
-  setupA2HSTip_();            // ✅ dica “Adicionar ao ecrã inicial” (mobile, 1 vez)
+  await carregarFeriasCSV();
+  updateTopCards();
+  await carregarCSV();
+  setupA2HSTip_();
 })();
 </script>
 
