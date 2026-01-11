@@ -3,13 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <title>Horários de Trabalho</title>
+
+<!-- PWA / APP -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#007bff">
+
+<!-- iPhone / Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Horários">
+<link rel="apple-touch-icon" href="icon-192.png">
+
 <style>
+
   /* background mais bonito */
-  body { 
-    font-family: Arial, sans-serif; 
+  body {
+    font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #e9f0ff, #f7f9fc);
-    text-align: center; 
-    padding: 20px; 
+    text-align: center;
+    padding: 20px;
   }
 
   h1 { color: #007bff; margin-bottom: 10px; }
@@ -125,62 +137,54 @@
   .colorBox { width: 20px; height: 20px; display: inline-block; border-radius: 3px; }
   .colorBox.vac { background: linear-gradient(135deg, #ffeaa7, #fdcb6e); border: 1px solid rgba(0,0,0,0.12); }
 
- /* --------- MODAL (POPUP) FÉRIAS --------- */
-.modal-overlay{
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.55);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:16px;
-  z-index:9999;
-}
-
-.modal{
-  width: min(520px, 100%);
-  background: white;
-  border-radius: 14px;
-  padding: 16px;
-  text-align:left;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-  color: #000;              /* ✅ texto preto */
-}
-
-.modal h3{
-  margin:0 0 10px;
-  font-size: 20px;
-  color: #000;              /* ✅ título preto */
-}
-
-.modal ul{
-  margin:0 0 12px;
-  padding-left:18px;
-  line-height:1.6;
-}
-
-.modal ul li{
-  color: #000;              /* ✅ texto das férias preto */
-  font-weight: 500;
-  font-size: 15px;
-  margin-bottom: 6px;
-}
-
-.modal .actions{
-  display:flex;
-  justify-content:flex-end;
-  gap:10px;
-}
-
-.btn-close{
-  background:#2c3e50;
-  color: #fff;
-}
-
-.btn-close:hover{
-  background:#1d2a36;
-}
-
+  /* --------- MODAL (POPUP) FÉRIAS --------- */
+  .modal-overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:16px;
+    z-index:9999;
+  }
+  .modal{
+    width: min(520px, 100%);
+    background: white;
+    border-radius: 14px;
+    padding: 16px;
+    text-align:left;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    color: #000;
+  }
+  .modal h3{
+    margin:0 0 10px;
+    font-size: 20px;
+    color: #000;
+  }
+  .modal ul{
+    margin:0 0 12px;
+    padding-left:18px;
+    line-height:1.6;
+  }
+  .modal ul li{
+    color: #000;
+    font-weight: 500;
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+  .modal .actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+  }
+  .btn-close{
+    background:#2c3e50;
+    color: #fff;
+  }
+  .btn-close:hover{
+    background:#1d2a36;
+  }
 
   /* ---------- LOGO NO FUNDO (clicável + adaptativa + animação) ---------- */
   .footer-logo {
@@ -202,6 +206,65 @@
   }
   .footer-logo img:hover { opacity: 0.85; }
 
+  /* ---------- DICA “Adicionar ao ecrã inicial” (mobile only) ---------- */
+  #a2hsTip {
+    display: none;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto 14px;
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 12px;
+    padding: 12px;
+    text-align: left;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity .25s ease, transform .25s ease;
+  }
+  #a2hsTip.show { display:block; opacity:1; transform: translateY(0); }
+
+  #a2hsTip .row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  #a2hsTip .title {
+    font-weight: 800;
+    margin-bottom: 4px;
+    color: #1d4e89;
+  }
+  #a2hsTip .text {
+    font-size: 14px;
+    color: #333;
+    line-height: 1.35;
+  }
+  #a2hsTip .actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  #a2hsTip .btn {
+    border: none;
+    border-radius: 10px;
+    padding: 9px 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .2s;
+  }
+  #a2hsTip .btn-close {
+    background: #2c3e50;
+    color: white;
+  }
+  #a2hsTip .btn-close:hover { background:#1d2a36; }
+  #a2hsTip .btn-help {
+    background: #007bff;
+    color: white;
+  }
+  #a2hsTip .btn-help:hover { background:#0056b3; }
+
   /* 🌙 Modo escuro */
   @media (prefers-color-scheme: dark) {
     body {
@@ -220,6 +283,10 @@
 
     .footer-logo.show { opacity: 0.7; }
     .footer-logo img { filter: brightness(1.35) contrast(1.1); }
+
+    #a2hsTip { background:#1f1f1f; border-color: rgba(255,255,255,0.10); }
+    #a2hsTip .text { color:#eaeaea; }
+    #a2hsTip .title { color:#bfe1ff; }
   }
 
   @media(max-width: 600px) {
@@ -232,6 +299,22 @@
 <body>
 
 <h1>Horários de Trabalho</h1>
+
+<!-- DICA: adicionar ao ecrã inicial (aparece só 1 vez no telemóvel) -->
+<div id="a2hsTip">
+  <div class="row">
+    <div>
+      <div class="title">📱 Dica rápida</div>
+      <div class="text" id="a2hsText">
+        Podes adicionar este site ao ecrã inicial para abrir como uma app.
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-help" id="a2hsHow">Como?</button>
+      <button class="btn btn-close" id="a2hsClose">Fechar</button>
+    </div>
+  </div>
+</div>
 
 <div id="feriasAviso"></div>
 <div id="proximasFerias"></div>
@@ -329,10 +412,9 @@ function parseCSVLines(text){
 }
 
 function parseDateSafe(s){
-  // espera YYYY-MM-DD (mais seguro)
   const t = normalizeCell(s);
   if(!t) return null;
-  // Se vier "YYYY-MM-DD", cria em UTC e depois converte para local (mantém o dia certo)
+
   const m = t.match(/^(\d{4})-(\d{2})-(\d{2})$/);
   if(m){
     const y = parseInt(m[1],10), mo = parseInt(m[2],10)-1, d = parseInt(m[3],10);
@@ -340,7 +422,7 @@ function parseDateSafe(s){
     dt.setHours(0,0,0,0);
     return dt;
   }
-  // fallback
+
   const dt = new Date(t);
   if(isNaN(dt)) return null;
   dt.setHours(0,0,0,0);
@@ -355,7 +437,6 @@ function fmtDateShort(dt){
 }
 
 function daysBetween(a, b){
-  // a e b são Date com hora 00:00
   const ms = 24*60*60*1000;
   return Math.round((toDateOnly(b).getTime() - toDateOnly(a).getTime()) / ms);
 }
@@ -476,11 +557,9 @@ function updateTopCards(){
   if(footerLogo){
     if(ESTA_DE_FERIAS){
       footerLogo.classList.remove('show');
-      // após a transição, esconde mesmo (evita espaço)
       setTimeout(() => { footerLogo.style.display = 'none'; }, 260);
     } else {
       footerLogo.style.display = 'flex';
-      // pequeno delay para animar
       setTimeout(() => footerLogo.classList.add('show'), 20);
     }
   }
@@ -497,10 +576,10 @@ function classificarHorario(horario){
   let inicio = parseFloat(parts[0].replace(':','.'));
   let fim    = parseFloat(parts[1].replace(':','.'));
 
-  if(inicio === 7 && fim === 17) return 'blue-dark';       // Chambre de commerce
-  if(inicio >= 12 && fim <= 21) return 'red';              // tarde
-  if(inicio >= 5 && fim <= 13) return 'green';             // manhã
-  if(inicio >= 10 && fim <= 17) return 'blue';             // dia
+  if(inicio === 7 && fim === 17) return 'blue-dark';
+  if(inicio >= 12 && fim <= 21) return 'red';
+  if(inicio >= 5 && fim <= 13) return 'green';
+  if(inicio >= 10 && fim <= 17) return 'blue';
 
   return '';
 }
@@ -624,7 +703,6 @@ function mostrarSemana(index){
         td.classList.add('today');
       }
     } else {
-      // se não for data, deixa como estava
       td.textContent = celula;
     }
 
@@ -638,7 +716,6 @@ function mostrarSemana(index){
     table.classList.add('weekVacTable');
 
     const aviso = document.getElementById('feriasAviso');
-    // não sobrescreve o aviso "Estás de férias agora", só ajuda quando não estás no intervalo hoje
     if(!ESTA_DE_FERIAS){
       aviso.textContent = '🏖️ Esta semana é 100% FÉRIAS.';
       aviso.classList.add('show');
@@ -697,12 +774,68 @@ document.addEventListener('keydown', (e)=>{
 });
 
 /* ==========================
+   DICA “Adicionar ao ecrã inicial”
+========================== */
+function isMobile_(){
+  return window.matchMedia("(max-width: 900px)").matches;
+}
+
+function isStandalone_(){
+  const dm = window.matchMedia("(display-mode: standalone)").matches;
+  const ios = (window.navigator && window.navigator.standalone) === true;
+  return dm || ios;
+}
+
+function detectBrowserHint_(){
+  const ua = navigator.userAgent || "";
+  const isSamsungInternet = /SamsungBrowser/i.test(ua);
+  const isIOS = /iPhone|iPad|iPod/i.test(ua);
+  const isSafari = isIOS && /Safari/i.test(ua) && !/CriOS|FxiOS|EdgiOS/i.test(ua);
+
+  if (isSamsungInternet) return "Samsung Internet: Menu ☰/⋮ → “Adicionar página a” → “Ecrã inicial”.";
+  if (isSafari) return "iPhone (Safari): Partilhar ⬆️ → “Adicionar ao ecrã principal”.";
+  return "No browser: Menu → “Adicionar ao ecrã inicial”.";
+}
+
+function setupA2HSTip_(){
+  const tip = document.getElementById("a2hsTip");
+  const txt = document.getElementById("a2hsText");
+  const btnClose = document.getElementById("a2hsClose");
+  const btnHow = document.getElementById("a2hsHow");
+
+  if (!tip || !txt || !btnClose || !btnHow) return;
+
+  // só no telemóvel
+  if (!isMobile_()) return;
+
+  // se já estiver “modo app”, não mostrar
+  if (isStandalone_()) return;
+
+  // só mostrar 1 vez
+  const key = "a2hs_tip_dismissed_v1";
+  if (localStorage.getItem(key) === "1") return;
+
+  tip.classList.add("show");
+
+  btnClose.addEventListener("click", () => {
+    localStorage.setItem(key, "1");
+    tip.classList.remove("show");
+  });
+
+  btnHow.addEventListener("click", () => {
+    txt.textContent = detectBrowserHint_();
+    btnHow.style.display = "none";
+  });
+}
+
+/* ==========================
    ARRANQUE
 ========================== */
 (async () => {
   await carregarFeriasCSV();  // férias primeiro
   updateTopCards();           // aviso + badge + próximas férias + logo animada
   await carregarCSV();        // depois horários
+  setupA2HSTip_();            // ✅ dica “Adicionar ao ecrã inicial” (mobile, 1 vez)
 })();
 </script>
 
