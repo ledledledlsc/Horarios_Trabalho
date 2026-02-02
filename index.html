@@ -477,8 +477,18 @@ function updateTopCards(){
    HORÁRIOS
 ========================== */
 function classificarHorario(horario){
-  horario = normalizeCell(horario).replace(/\s/g,'').replace(/h/gi,'');
-  const parts = horario.split('-');
+  const raw = normalizeCell(horario);
+
+  // ✅ CÓDIGO CHAMBRE DE COMMERCE
+  // Ex: CDC13/17, CDC7/17, CDC 13/17
+  const cdcMatch = raw.match(/^CDC\s*(\d{1,2})[\/\-](\d{1,2})$/i);
+  if (cdcMatch) {
+    return 'blue-dark'; // cor Chambre de commerce
+  }
+
+  // normal (7-13H, 13-20H, etc.)
+  const clean = raw.replace(/\s/g,'').replace(/h/gi,'');
+  const parts = clean.split('-');
   if(parts.length !== 2) return '';
 
   let inicio = parseFloat(parts[0].replace(':','.'));
