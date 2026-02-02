@@ -2,7 +2,6 @@
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Horários de Trabalho</title>
 
 <!-- PWA / APP -->
@@ -16,131 +15,100 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 
 <style>
-  body{
-    margin:0;
-    min-height:100vh;
-    font-family: Arial, sans-serif;
+  body { 
+    font-family: Arial, sans-serif; 
     background: linear-gradient(135deg, #e9f0ff, #f7f9fc);
-    text-align:center;
-    padding:20px;
+    text-align: center; 
+    padding: 20px; 
   }
 
-  h1{ color:#007bff; margin-bottom:10px; }
-  #semanaTitulo{ font-size:26px; color:#333; margin-bottom:15px; }
+  h1 { color: #007bff; margin-bottom: 10px; }
+  #semanaTitulo { font-size: 26px; color: #333; margin-bottom: 15px; }
 
-  .buttons{ margin-bottom:16px; display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
-  button{ margin:5px; padding:10px 15px; font-size:16px; border-radius:5px; border:none; background:#007bff; color:#fff; cursor:pointer; transition:.2s; }
-  button:hover{ background:#0056b3; }
+  .buttons { margin-bottom: 16px; display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
+  button { margin: 5px; padding: 10px 15px; font-size: 16px; border-radius: 5px; border: none; background: #007bff; color: white; cursor: pointer; transition: 0.2s; }
+  button:hover { background: #0056b3; }
 
   /* botão férias */
-  #feriasBtn{ background:#8e44ad; }
-  #feriasBtn:hover{ background:#6f2f8a; }
-  #feriasBadge{
+  #feriasBtn { background:#8e44ad; }
+  #feriasBtn:hover { background:#6f2f8a; }
+  #feriasBadge {
     display:none;
     margin-left:8px;
-    background:#ffcc00;
-    color:#2c3e50;
-    padding:2px 8px;
-    border-radius:999px;
-    font-weight:bold;
-    font-size:12px;
-    vertical-align:middle;
+    background: #ffcc00;
+    color: #2c3e50;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-weight: bold;
+    font-size: 12px;
+    vertical-align: middle;
   }
 
   /* cards acima */
   #feriasAviso, #proximasFerias{
     display:none;
-    width:100%;
-    max-width:900px;
-    margin-left:auto;
-    margin-right:auto;
-    margin-bottom:12px;
-    padding:12px 14px;
-    border-radius:10px;
-    font-weight:bold;
-    opacity:0;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto 12px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-weight: bold;
+    opacity: 0;
     transform: translateY(-6px);
     transition: opacity .25s ease, transform .25s ease;
-    text-align:center;
-    box-sizing:border-box;
+    text-align: center;
   }
-  #feriasAviso{ background:#fff3cd; border:1px solid #ffeeba; color:#856404; }
-  #proximasFerias{ background:#eef6ff; border:1px solid #cfe6ff; color:#1d4e89; }
+  #feriasAviso{ background: #fff3cd; border: 1px solid #ffeeba; color: #856404; }
+  #proximasFerias{ background: #eef6ff; border: 1px solid #cfe6ff; color: #1d4e89; }
 
   #feriasAviso.show, #proximasFerias.show{
-    display:block;
-    opacity:1;
-    transform: translateY(0);
+    display:block; opacity:1; transform: translateY(0);
   }
 
-  table{
-    border-collapse:collapse;
-    width:100%;
-    max-width:800px;
-    margin:0 auto 30px;
-    box-shadow:0 0 10px rgba(0,0,0,0.1);
-    background:white;
-  }
-  th, td{
-    border:1px solid #ccc;
-    padding:12px;
-    width:14.28%;
-    word-wrap:break-word;
-    font-size:16px;
-  }
-  th{ background:#e9ecef; }
+  table { border-collapse: collapse; width: 100%; max-width: 900px; margin: 0 auto 30px; box-shadow: 0 0 10px rgba(0,0,0,0.1); background: white; }
+  th, td { border: 1px solid #ccc; padding: 12px; width: 14.28%; word-wrap: break-word; font-size: 16px; }
+  th { background: #e9ecef; }
 
-  .green{ background-color:#27ae60; color:white; }
-  .red{ background-color:#e74c3c; color:white; }
-  .gray{ background-color:#bdc3c7; color:black; }
-  .darkgray{ background-color:#2c3e50; color:white; }
-  .blue{ background-color:#3498db; color:white; }
-  .blue-dark{ background-color:#1d4e89; color:white; font-weight:bold; }
+  .green { background-color: #27ae60; color: white; }
+  .red { background-color: #e74c3c; color: white; }
+  .gray { background-color: #bdc3c7; color: black; }
+  .darkgray { background-color: #2c3e50; color: white; }
+  .blue { background-color: #3498db; color: white; }
+  .blue-dark { background-color: #1d4e89; color: white; font-weight: bold; }
 
-  .today{
-    border:4px solid orange;
-    font-weight:bold;
-    text-decoration:underline;
-    box-shadow:0 0 10px rgba(255,165,0,0.7);
-  }
+  .today { border: 4px solid orange; font-weight: bold; text-decoration: underline; box-shadow: 0 0 10px rgba(255,165,0,0.7); }
 
   /* notas (4ª linha) */
-  .notesRow td{
-    font-size:14px;
-    background:#fff;
-    color:#333;
-    font-style:italic;
+  .notesRow td {
+    font-size: 14px;
+    background: #fff;
+    color: #333;
+    font-style: italic;
   }
-  .noteCell{
-    border-top:2px dashed #bbb;
-    background:#fafafa;
+  .noteCell {
+    border-top: 2px dashed #bbb;
+    background: #fafafa;
   }
 
   /* célula marcada como férias */
-  .vacCell{
+  .vacCell {
     background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
-    color:#2c3e50;
-    font-weight:bold;
+    color: #2c3e50;
+    font-weight: bold;
   }
 
   /* quando a semana é 100% férias */
-  .weekVacTable{
-    outline:4px solid rgba(253,203,110,0.55);
-    box-shadow:0 0 18px rgba(253,203,110,0.35);
-    border-radius:10px;
-    overflow:hidden;
+  .weekVacTable {
+    outline: 4px solid rgba(253,203,110,0.55);
+    box-shadow: 0 0 18px rgba(253,203,110,0.35);
+    border-radius: 10px;
+    overflow: hidden;
   }
 
-  #legenda{
-    display:flex;
-    justify-content:center;
-    flex-wrap:wrap;
-    margin-bottom:20px;
-    gap:15px;
-  }
-  .itemLegenda{ display:flex; align-items:center; gap:5px; font-size:14px; }
-  .colorBox{ width:20px; height:20px; display:inline-block; border-radius:3px; }
-  .colorBox.vac{ background: linear-gradient(135deg, #ffeaa7, #fdcb6e); border:1px solid rgba(0,0,0,0.12); }
+  #legenda { display: flex; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; gap: 15px; }
+  .itemLegenda { display: flex; align-items: center; gap: 6px; font-size: 14px; }
+  .colorBox { width: 20px; height: 20px; display: inline-block; border-radius: 3px; }
+  .colorBox.vac { background: linear-gradient(135deg, #ffeaa7, #fdcb6e); border: 1px solid rgba(0,0,0,0.12); }
 
   /* --------- MODAL (POPUP) FÉRIAS --------- */
   .modal-overlay{
@@ -162,64 +130,52 @@
     box-shadow: 0 10px 30px rgba(0,0,0,0.25);
     color:#000;
   }
-  .modal h3{ margin:0 0 10px; font-size:20px; color:#000; }
+  .modal h3{ margin:0 0 10px; font-size: 20px; color:#000; }
   .modal ul{ margin:0 0 12px; padding-left:18px; line-height:1.6; }
   .modal ul li{ color:#000; font-weight:500; font-size:15px; margin-bottom:6px; }
   .modal .actions{ display:flex; justify-content:flex-end; gap:10px; }
   .btn-close{ background:#2c3e50; color:#fff; }
   .btn-close:hover{ background:#1d2a36; }
 
-  /* ---------- LOGO ---------- */
-  .footer-logo{
-    margin-top:26px;
-    padding-top:14px;
-    display:flex;
-    justify-content:center;
-    opacity:0;
+  /* ---------- LOGO NO FUNDO (clicável + animação) ---------- */
+  .footer-logo {
+    margin-top: 26px;
+    padding-top: 14px;
+    display: flex;
+    justify-content: center;
+    opacity: 0;
     transform: translateY(6px);
     transition: opacity .25s ease, transform .25s ease;
   }
-  .footer-logo.show{ opacity:0.35; transform: translateY(0); }
-  .footer-logo img{
-    height:42px;
-    max-width:180px;
-    object-fit:contain;
-    transition: opacity .2s ease, filter .2s ease;
+  .footer-logo.show { opacity: 0.35; transform: translateY(0); }
+  .footer-logo a { display: inline-block; }
+  .footer-logo img {
+    height: 42px;
+    max-width: 180px;
+    object-fit: contain;
+    transition: opacity 0.2s ease, filter 0.2s ease;
   }
-  .footer-logo img:hover{ opacity:0.85; }
-
-  /* ✅ ícone CDC discreto */
-  .cdcIcon{
-    margin-right:6px;
-    font-size:15px;
-    opacity:0.95;
-    vertical-align:middle;
-  }
+  .footer-logo img:hover { opacity: 0.85; }
 
   /* 🌙 Modo escuro */
-  @media (prefers-color-scheme: dark){
-    body{
-      background: linear-gradient(135deg, #121212, #1e1e1e);
-      color:#eaeaea;
-    }
-    #semanaTitulo{ color:#eaeaea; }
-    table{ background:#1f1f1f; }
-    th{ background:#2a2a2a; color:#fff; }
-    th, td{ border-color:#444; }
-    .notesRow td{ background:#1f1f1f; color:#eaeaea; }
-    .noteCell{ background:#222; border-top-color:#555; }
-
-    #proximasFerias{ background:#13283b; border-color:#214563; color:#bfe1ff; }
-    #feriasAviso{ background:#3a2f12; border-color:#6a5520; color:#ffe9b0; }
-
-    .footer-logo.show{ opacity:0.7; }
-    .footer-logo img{ filter: brightness(1.35) contrast(1.1); }
+  @media (prefers-color-scheme: dark) {
+    body { background: linear-gradient(135deg, #121212, #1e1e1e); color: #eaeaea; }
+    #semanaTitulo { color: #eaeaea; }
+    table { background: #1f1f1f; }
+    th { background: #2a2a2a; color: #ffffff; }
+    th, td { border-color: #444; }
+    .notesRow td { background: #1f1f1f; color: #eaeaea; }
+    .noteCell { background: #222; border-top-color: #555; }
+    #proximasFerias { background:#13283b; border-color:#214563; color:#bfe1ff; }
+    #feriasAviso { background:#3a2f12; border-color:#6a5520; color:#ffe9b0; }
+    .footer-logo.show { opacity: 0.7; }
+    .footer-logo img { filter: brightness(1.35) contrast(1.1); }
   }
 
-  @media(max-width: 600px){
-    th, td{ font-size:14px; padding:8px; }
-    #semanaTitulo{ font-size:20px; }
-    button{ font-size:14px; padding:8px 12px; }
+  @media(max-width: 600px) {
+    th, td { font-size: 14px; padding: 8px; }
+    #semanaTitulo { font-size: 20px; }
+    button { font-size: 14px; padding: 8px 12px; }
   }
 </style>
 </head>
@@ -239,7 +195,7 @@
 
 <div id="legenda">
   <div class="itemLegenda"><span class="colorBox blue"></span> dia</div>
-  <div class="itemLegenda"><span class="colorBox blue-dark"></span> Chambre de commerce</div>
+  <div class="itemLegenda"><span class="colorBox blue-dark"></span> Chambre de commerce (CDC)</div>
   <div class="itemLegenda"><span class="colorBox green"></span> manhã</div>
   <div class="itemLegenda"><span class="colorBox red"></span> tarde</div>
   <div class="itemLegenda"><span class="colorBox gray"></span> Escola</div>
@@ -263,7 +219,9 @@
 <!-- LOGO -->
 <div class="footer-logo" id="footerLogo">
   <a href="https://www.cactus.lu/fr" target="_blank" rel="noopener">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Cactus_Logo.svg/960px-Cactus_Logo.svg.png" alt="Logo Cactus">
+    <img
+      src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Cactus_Logo.svg/960px-Cactus_Logo.svg.png"
+      alt="Logo Cactus">
   </a>
 </div>
 
@@ -305,53 +263,36 @@ function inRange(today, start, end){
 
 function parseCSVLines(text){
   const lines = (text || '').trim().split(/\r?\n/).filter(Boolean);
+
   return lines.map((line) => {
     const hasTab = line.includes('\t');
     const hasComma = line.includes(',');
     const hasSemi = line.includes(';');
+
     let sep = ',';
     if (hasTab) sep = '\t';
     else if (!hasComma && hasSemi) sep = ';';
+
     return line.split(sep).map(x => String(x).replace(/^"|"$/g,'').trim());
   });
 }
 
-function parseDateSafe(s){
-  const t = normalizeCell(s);
-  if(!t) return null;
-  const m = t.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if(m){
-    const y = parseInt(m[1],10), mo = parseInt(m[2],10)-1, d = parseInt(m[3],10);
-    const dt = new Date(y, mo, d);
-    dt.setHours(0,0,0,0);
-    return dt;
-  }
-  const dt = new Date(t);
-  if(isNaN(dt)) return null;
-  dt.setHours(0,0,0,0);
-  return dt;
-}
-
-function fmtDateShort(dt){
-  return `${String(dt.getDate()).padStart(2,'0')}/${meses[dt.getMonth()]}/${dt.getFullYear()}`;
-}
-
-function daysBetween(a, b){
-  const ms = 24*60*60*1000;
-  return Math.round((toDateOnly(b).getTime() - toDateOnly(a).getTime()) / ms);
-}
-
 /* ==========================
-   ✅ CDC (Chambre de commerce) - CÓDIGO CURTO
-   No Sheets escreve: CDC13/17
+   CDC (Chambre de commerce)
+   Aceita: CDC13/17, CDC 13/17, cdc13-17, CDC13-17
 ========================== */
 function parseCDC(raw){
-  const v = String(raw || '').toUpperCase().replace(/\s/g,'');
+  const v = String(raw || '')
+    .toUpperCase()
+    .replace(/\s/g,'')
+    .replace('H','');
+
   const m = v.match(/^CDC(\d{1,2})[\/\-](\d{1,2})$/);
   if(!m) return null;
 
   const start = parseInt(m[1],10);
   const end   = parseInt(m[2],10);
+
   if(Number.isNaN(start) || Number.isNaN(end)) return null;
 
   return {
@@ -359,6 +300,36 @@ function parseCDC(raw){
     className: 'blue-dark',
     icon: '🏛️'
   };
+}
+
+function parseDateSafe(s){
+  const t = normalizeCell(s);
+  if(!t) return null;
+
+  const m = t.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if(m){
+    const y = parseInt(m[1],10), mo = parseInt(m[2],10)-1, d = parseInt(m[3],10);
+    const dt = new Date(y, mo, d);
+    dt.setHours(0,0,0,0);
+    return dt;
+  }
+
+  const dt = new Date(t);
+  if(isNaN(dt)) return null;
+  dt.setHours(0,0,0,0);
+  return dt;
+}
+
+function fmtDateShort(dt){
+  const d = dt.getDate();
+  const m = meses[dt.getMonth()];
+  const y = dt.getFullYear();
+  return `${String(d).padStart(2,'0')}/${m}/${y}`;
+}
+
+function daysBetween(a, b){
+  const ms = 24*60*60*1000;
+  return Math.round((toDateOnly(b).getTime() - toDateOnly(a).getTime()) / ms);
 }
 
 /* ==========================
@@ -375,6 +346,7 @@ function parseFeriasCSV(text){
   const idxStart = headers.indexOf('start');
   const idxEnd = headers.indexOf('end');
   const idxLabel = headers.indexOf('label');
+
   if(idxStart < 0 || idxEnd < 0) return [];
 
   return lines.slice(1).map(row => {
@@ -383,6 +355,8 @@ function parseFeriasCSV(text){
     const startDt  = parseDateSafe(startStr);
     const endDt    = parseDateSafe(endStr);
     return {
+      start: startStr,
+      end: endStr,
       startDt,
       endDt,
       label: idxLabel >= 0 ? normalizeCell(row[idxLabel]) : ''
@@ -405,7 +379,7 @@ function getVacationForDate(date){
 function getNextVacation(today){
   const t = toDateOnly(today);
   const future = FERIAS_RANGES
-    .filter(r => toDateOnly(r.startDt).getTime() > t.getTime())
+    .filter(r => r.startDt && toDateOnly(r.startDt).getTime() > t.getTime())
     .sort((a,b) => a.startDt - b.startDt);
   return future[0] || null;
 }
@@ -429,7 +403,7 @@ function updateTopCards(){
   const prox  = document.getElementById('proximasFerias');
   const footerLogo = document.getElementById('footerLogo');
 
-  // lista no modal
+  // Render lista no modal
   const ul = document.getElementById('feriasList');
   ul.innerHTML = '';
   if(!FERIAS_RANGES.length){
@@ -469,7 +443,7 @@ function updateTopCards(){
     }
   }
 
-  // logo animada
+  // Logo com animação
   if(footerLogo){
     if(ESTA_DE_FERIAS){
       footerLogo.classList.remove('show');
@@ -492,10 +466,11 @@ function classificarHorario(horario){
   let inicio = parseFloat(parts[0].replace(':','.'));
   let fim    = parseFloat(parts[1].replace(':','.'));
 
-  if(inicio === 7 && fim === 17) return 'blue-dark'; // CDC normal
+  if(inicio === 7 && fim === 17) return 'blue-dark';
   if(inicio >= 12 && fim <= 21) return 'red';
   if(inicio >= 5 && fim <= 13) return 'green';
   if(inicio >= 10 && fim <= 17) return 'blue';
+
   return '';
 }
 
@@ -510,17 +485,20 @@ async function carregarCSV() {
     if(linhasCache[i][0] && linhasCache[i][0].toUpperCase().includes('SEMANA')) {
       let start = i;
       let end = start + 2;
+
       while(end + 1 < linhasCache.length &&
             linhasCache[end + 1][0] &&
             !linhasCache[end + 1][0].toUpperCase().includes('SEMANA')) {
         end++;
       }
+
       semanas.push({start,end});
       i = end + 1;
     } else i++;
   }
 
-  const hoje = new Date(); hoje.setHours(0,0,0,0);
+  const hoje = new Date();
+  hoje.setHours(0,0,0,0);
   for(let s=0;s<semanas.length;s++){
     const semana = semanas[s];
     const linhaDatas = linhasCache[semana.start+1] || [];
@@ -563,13 +541,16 @@ function mostrarSemana(index){
     const th = document.createElement('th');
     const data = new Date(celula);
     if(!isNaN(data)){
-      th.textContent = `${diasSemana[data.getDay()]} ${data.getDate()}/${meses[data.getMonth()]}`;
+      const diaSemana = diasSemana[data.getDay()];
+      const diaMes = data.getDate();
+      const mes = meses[data.getMonth()];
+      th.textContent = `${diaSemana} ${diaMes}/${mes}`;
     } else th.textContent = celula;
     trHead.appendChild(th);
   });
   tbody.appendChild(trHead);
 
-  // Linha horários
+  // Linha de horários
   const trHorario = document.createElement('tr');
   const hoje = new Date(); hoje.setHours(0,0,0,0);
 
@@ -586,6 +567,7 @@ function mostrarSemana(index){
       dataCelula.setHours(0,0,0,0);
       totalDiasValidos++;
 
+      // 1) férias substituem tudo
       const vac = getVacationForDate(dataCelula);
       if(vac){
         diasFerias++;
@@ -593,17 +575,19 @@ function mostrarSemana(index){
         td.classList.add('vacCell');
         td.title = vac.label ? `Férias: ${vac.label}` : 'Férias';
       } else {
-        // ✅ CDC shortcut
-        const parsedCDC = parseCDC(celula);
-        if(parsedCDC){
-          td.classList.add(parsedCDC.className);
-          td.innerHTML = `<span class="cdcIcon">${parsedCDC.icon}</span>${parsedCDC.text}`;
+        // 2) CDC (teu pedido)
+        const cdc = parseCDC(celula);
+        if(cdc){
+          td.textContent = `${cdc.icon} ${cdc.text}`;
+          td.classList.add(cdc.className);
           td.title = 'Chambre de commerce';
         } else {
+          // 3) normal
           td.textContent = celula;
 
-          const valor = celula.toLowerCase();
+          const valor = (celula || '').toLowerCase();
           const cor = classificarHorario(celula);
+
           if(cor) td.classList.add(cor);
           else if(valor.includes('escola')) td.classList.add('gray');
           else if(valor.includes('feriado')) td.classList.add('red');
@@ -620,7 +604,6 @@ function mostrarSemana(index){
 
     trHorario.appendChild(td);
   });
-
   tbody.appendChild(trHorario);
 
   const semanaInteiraFerias = totalDiasValidos > 0 && diasFerias === totalDiasValidos;
