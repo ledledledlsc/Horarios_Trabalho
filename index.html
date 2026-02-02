@@ -282,10 +282,28 @@ function parseCSVLines(text){
    Aceita: CDC13/17, CDC 13/17, cdc13-17, CDC13-17
 ========================== */
 function parseCDC(raw){
-  const v = String(raw || '')
-    .toUpperCase()
-    .replace(/\s/g,'')
-    .replace('H','');
+  // aceita: CDC13/17 | CDC 13-17 | CDC13/17H | CDC13:00/17:00 | cdc 13/17 etc
+  let v = String(raw || '').toUpperCase().trim();
+
+  // tira espaços e "H"
+  v = v.replace(/\s/g,'').replace(/H/g,'');
+
+  // transforma ":" em nada (13:00 -> 1300) mas só queremos as horas
+  // então vamos extrair só os primeiros 1-2 dígitos antes do / ou -
+  const m = v.match(/^CDC(\d{1,2})(?::?\d{0,2})?[\/\-](\d{1,2})(?::?\d{0,2})?$/);
+  if(!m) return null;
+
+  const start = parseInt(m[1],10);
+  const end   = parseInt(m[2],10);
+  if(Number.isNaN(start) || Number.isNaN(end)) return null;
+
+  return {
+    text: `${start}-${end}H`,
+    className: 'blue-dark',
+    icon: '🏛️'
+  };
+}
+
 
   const m = v.match(/^CDC(\d{1,2})[\/\-](\d{1,2})$/);
   if(!m) return null;
