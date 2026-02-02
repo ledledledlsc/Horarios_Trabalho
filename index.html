@@ -161,10 +161,18 @@
   }
 
   @media(max-width: 600px) {
-    th, td { font-size: 14px; padding: 8px; }
-    #semanaTitulo { font-size: 20px; }
-    button { font-size: 14px; padding: 8px 12px; }
-  }
+  th, td { font-size: 14px; padding: 8px; }
+  #semanaTitulo { font-size: 20px; }
+  button { font-size: 14px; padding: 8px 12px; }
+}
+
+/* ÍCONE CDC */
+.cdc-icon{
+  margin-right: 6px;
+  filter: drop-shadow(0 1px 0 rgba(0,0,0,.15));
+}
+</style>
+
 </style>
 </head>
 
@@ -522,7 +530,7 @@ function mostrarSemana(index){
         if(cdcMatch){
           const a = String(cdcMatch[1]).padStart(2,'0');
           const b = String(cdcMatch[2]).padStart(2,'0');
-          td.textContent = `${a}-${b}H`;
+          td.innerHTML = `<span class="cdc-icon">🏫</span><span>${a}-${b}H</span>`;
           td.classList.add('blue-dark');
           td.title = 'Chambre de commerce';
         } else {
