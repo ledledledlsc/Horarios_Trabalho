@@ -15,28 +15,45 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 
 <style>
-  body { 
-    font-family: Arial, sans-serif; 
+  body{
+    font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #e9f0ff, #f7f9fc);
-    text-align: center; 
-    padding: 20px; 
+    text-align:center;
+    padding: 18px;
+    margin: 0;
   }
 
-  h1 { color: #007bff; margin-bottom: 10px; }
-  #semanaTitulo { font-size: 26px; color: #333; margin-bottom: 15px; }
+  h1{ color:#007bff; margin: 12px 0 10px; }
+  #semanaTitulo{ font-size: 26px; color:#333; margin: 8px 0 12px; }
 
-  .buttons { margin-bottom: 16px; display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
-  button { margin: 5px; padding: 10px 15px; font-size: 16px; border-radius: 5px; border: none; background: #007bff; color: white; cursor: pointer; transition: 0.2s; }
-  button:hover { background: #0056b3; }
+  .buttons{
+    margin-bottom: 12px;
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  button{
+    margin: 4px;
+    padding: 10px 14px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
+    background: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  button:hover{ background:#0056b3; }
 
-  /* botão férias */
-  #feriasBtn { background:#8e44ad; }
-  #feriasBtn:hover { background:#6f2f8a; }
-  #feriasBadge {
+  #feriasBtn{ background:#8e44ad; }
+  #feriasBtn:hover{ background:#6f2f8a; }
+
+  #feriasBadge{
     display:none;
     margin-left:8px;
-    background: #ffcc00;
-    color: #2c3e50;
+    background:#ffcc00;
+    color:#2c3e50;
     padding: 2px 8px;
     border-radius: 999px;
     font-weight: bold;
@@ -56,61 +73,97 @@
     opacity: 0;
     transform: translateY(-6px);
     transition: opacity .25s ease, transform .25s ease;
-    text-align: center;
+    text-align: center;   /* ✅ garante centrado */
+    box-sizing: border-box;
   }
-  #feriasAviso{ background: #fff3cd; border: 1px solid #ffeeba; color: #856404; }
-  #proximasFerias{ background: #eef6ff; border: 1px solid #cfe6ff; color: #1d4e89; }
+  #feriasAviso{ background:#fff3cd; border:1px solid #ffeeba; color:#856404; }
+  #proximasFerias{ background:#eef6ff; border:1px solid #cfe6ff; color:#1d4e89; }
 
   #feriasAviso.show, #proximasFerias.show{
     display:block; opacity:1; transform: translateY(0);
   }
 
-  table { border-collapse: collapse; width: 100%; max-width: 900px; margin: 0 auto 30px; box-shadow: 0 0 10px rgba(0,0,0,0.1); background: white; }
-  th, td { border: 1px solid #ccc; padding: 12px; width: 14.28%; word-wrap: break-word; font-size: 16px; }
-  th { background: #e9ecef; }
-
-  .green { background-color: #27ae60; color: white; }
-  .red { background-color: #e74c3c; color: white; }
-  .gray { background-color: #bdc3c7; color: black; }
-  .darkgray { background-color: #2c3e50; color: white; }
-  .blue { background-color: #3498db; color: white; }
-  .blue-dark { background-color: #1d4e89; color: white; font-weight: bold; }
-
-  .today { border: 4px solid orange; font-weight: bold; text-decoration: underline; box-shadow: 0 0 10px rgba(255,165,0,0.7); }
-
-  /* notas (4ª linha) */
-  .notesRow td {
+  /* legenda */
+  #legenda{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap: 12px;
+    margin: 10px 0 14px;
     font-size: 14px;
-    background: #fff;
-    color: #333;
-    font-style: italic;
   }
-  .noteCell {
-    border-top: 2px dashed #bbb;
-    background: #fafafa;
-  }
-
-  /* célula marcada como férias */
-  .vacCell {
-    background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
-    color: #2c3e50;
-    font-weight: bold;
+  .itemLegenda{ display:flex; align-items:center; gap:6px; }
+  .colorBox{
+    width: 16px; height: 16px;
+    border-radius: 4px;
+    display:inline-block;
   }
 
-  /* quando a semana é 100% férias */
-  .weekVacTable {
-    outline: 4px solid rgba(253,203,110,0.55);
-    box-shadow: 0 0 18px rgba(253,203,110,0.35);
-    border-radius: 10px;
+  /* tabela */
+  .tableWrap{
+    max-width: 980px;
+    margin: 0 auto;
+  }
+
+  table{
+    border-collapse: collapse;
+    width: 100%;
+    margin: 0 auto 18px;
+    box-shadow: 0 0 16px rgba(0,0,0,0.10);
+    background: white;
+    border-radius: 14px;
     overflow: hidden;
   }
+  th, td{
+    border: 1px solid #ccc;
+    padding: 12px;
+    width: 14.28%;
+    word-wrap: break-word;
+    font-size: 16px;
+    text-align:center;
+  }
+  th{ background:#e9ecef; font-weight: 800; }
 
-  #legenda { display: flex; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; gap: 15px; }
-  .itemLegenda { display: flex; align-items: center; gap: 6px; font-size: 14px; }
-  .colorBox { width: 20px; height: 20px; display: inline-block; border-radius: 3px; }
-  .colorBox.vac { background: linear-gradient(135deg, #ffeaa7, #fdcb6e); border: 1px solid rgba(0,0,0,0.12); }
+  .green{ background:#27ae60; color:#fff; }
+  .red{ background:#e74c3c; color:#fff; }
+  .gray{ background:#bdc3c7; color:#000; }
+  .darkgray{ background:#2c3e50; color:#fff; }
+  .blue{ background:#3498db; color:#fff; }
+  .blue-dark{ background:#1d4e89; color:#fff; font-weight: bold; }
 
-  /* --------- MODAL (POPUP) FÉRIAS --------- */
+  .today{
+    border: 4px solid orange;
+    font-weight: bold;
+    text-decoration: underline;
+    box-shadow: 0 0 10px rgba(255,165,0,0.7);
+  }
+
+  /* notas (4ª linha) */
+  .notesRow td{
+    font-size: 14px;
+    background:#fff;
+    color:#333;
+    font-style: italic;
+  }
+  .noteCell{
+    border-top: 2px dashed #bbb;
+    background:#fafafa;
+  }
+
+  /* férias por data */
+  .vacCell{
+    background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+    color:#2c3e50;
+    font-weight: 800;
+  }
+  .weekVacTable{
+    outline: 4px solid rgba(253,203,110,0.55);
+    box-shadow: 0 0 18px rgba(253,203,110,0.35);
+  }
+
+  .colorBox.vac{ background: linear-gradient(135deg, #ffeaa7, #fdcb6e); border: 1px solid rgba(0,0,0,0.12); }
+
+  /* modal férias */
   .modal-overlay{
     position: fixed;
     inset: 0;
@@ -132,50 +185,51 @@
   }
   .modal h3{ margin:0 0 10px; font-size: 20px; color:#000; }
   .modal ul{ margin:0 0 12px; padding-left:18px; line-height:1.6; }
-  .modal ul li{ color:#000; font-weight:500; font-size:15px; margin-bottom:6px; }
+  .modal ul li{ color:#000; font-weight: 600; font-size: 15px; margin-bottom: 6px; }
   .modal .actions{ display:flex; justify-content:flex-end; gap:10px; }
   .btn-close{ background:#2c3e50; color:#fff; }
   .btn-close:hover{ background:#1d2a36; }
 
-  /* ---------- LOGO NO FUNDO (clicável + animação) ---------- */
-  .footer-logo {
-    margin-top: 26px;
-    padding-top: 14px;
-    display: flex;
-    justify-content: center;
+  /* logo */
+  .footer-logo{
+    margin-top: 18px;
+    padding: 10px 0 18px;
+    display:flex;
+    justify-content:center;
     opacity: 0;
     transform: translateY(6px);
     transition: opacity .25s ease, transform .25s ease;
   }
-  .footer-logo.show { opacity: 0.35; transform: translateY(0); }
-  .footer-logo a { display: inline-block; }
-  .footer-logo img {
-    height: 42px;
+  .footer-logo.show{ opacity: 0.35; transform: translateY(0); }
+  .footer-logo img{
+    height: 40px;
     max-width: 180px;
     object-fit: contain;
-    transition: opacity 0.2s ease, filter 0.2s ease;
-  }
-  .footer-logo img:hover { opacity: 0.85; }
-
-  /* 🌙 Modo escuro */
-  @media (prefers-color-scheme: dark) {
-    body { background: linear-gradient(135deg, #121212, #1e1e1e); color: #eaeaea; }
-    #semanaTitulo { color: #eaeaea; }
-    table { background: #1f1f1f; }
-    th { background: #2a2a2a; color: #ffffff; }
-    th, td { border-color: #444; }
-    .notesRow td { background: #1f1f1f; color: #eaeaea; }
-    .noteCell { background: #222; border-top-color: #555; }
-    #proximasFerias { background:#13283b; border-color:#214563; color:#bfe1ff; }
-    #feriasAviso { background:#3a2f12; border-color:#6a5520; color:#ffe9b0; }
-    .footer-logo.show { opacity: 0.7; }
-    .footer-logo img { filter: brightness(1.35) contrast(1.1); }
   }
 
-  @media(max-width: 600px) {
-    th, td { font-size: 14px; padding: 8px; }
-    #semanaTitulo { font-size: 20px; }
-    button { font-size: 14px; padding: 8px 12px; }
+  /* dark */
+  @media (prefers-color-scheme: dark){
+    body{ background: radial-gradient(circle at top, #2b2b2b, #0f0f0f); color:#eee; }
+    #semanaTitulo{ color:#eee; }
+    table{ background:#1f1f1f; }
+    th{ background:#2a2a2a; color:#fff; }
+    th, td{ border-color:#444; }
+    .notesRow td{ background:#1f1f1f; color:#eee; }
+    .noteCell{ background:#222; border-top-color:#555; }
+    #proximasFerias{ background:#13283b; border-color:#214563; color:#bfe1ff; }
+    #feriasAviso{ background:#3a2f12; border-color:#6a5520; color:#ffe9b0; }
+    .footer-logo.show{ opacity: 0.7; }
+  }
+
+  /* mobile layout: ocupa melhor o ecrã */
+  @media (max-width: 700px){
+    body{ padding: 12px; }
+    h1{ font-size: 22px; }
+    #semanaTitulo{ font-size: 20px; }
+    button{ font-size: 14px; padding: 9px 12px; }
+    th, td{ font-size: 14px; padding: 10px 6px; }
+    #legenda{ gap: 10px; font-size: 13px; }
+    table{ border-radius: 14px; }
   }
 </style>
 </head>
@@ -195,7 +249,7 @@
 
 <div id="legenda">
   <div class="itemLegenda"><span class="colorBox blue"></span> dia</div>
-  <div class="itemLegenda"><span class="colorBox blue-dark"></span> Chambre de commerce (CDC)</div>
+  <div class="itemLegenda"><span class="colorBox blue-dark"></span> Chambre de commerce</div>
   <div class="itemLegenda"><span class="colorBox green"></span> manhã</div>
   <div class="itemLegenda"><span class="colorBox red"></span> tarde</div>
   <div class="itemLegenda"><span class="colorBox gray"></span> Escola</div>
@@ -203,7 +257,9 @@
   <div class="itemLegenda"><span class="colorBox vac"></span> Férias</div>
 </div>
 
-<table id="horarios"><tbody></tbody></table>
+<div class="tableWrap">
+  <table id="horarios"><tbody></tbody></table>
+</div>
 
 <!-- POPUP FÉRIAS -->
 <div class="modal-overlay" id="feriasOverlay" aria-hidden="true">
@@ -242,6 +298,9 @@ let semanas = [];
 let semanaAtual = 0;
 let linhasCache = [];
 
+let FERIAS_RANGES = [];
+let ESTA_DE_FERIAS = false;
+
 /* ==========================
    HELPERS
 ========================== */
@@ -254,6 +313,7 @@ function toDateOnly(d){
   x.setHours(0,0,0,0);
   return x;
 }
+
 function inRange(today, start, end){
   const t = toDateOnly(today).getTime();
   const s = toDateOnly(start).getTime();
@@ -263,61 +323,15 @@ function inRange(today, start, end){
 
 function parseCSVLines(text){
   const lines = (text || '').trim().split(/\r?\n/).filter(Boolean);
-
-  return lines.map((line) => {
+  return lines.map(line => {
     const hasTab = line.includes('\t');
     const hasComma = line.includes(',');
     const hasSemi = line.includes(';');
-
     let sep = ',';
     if (hasTab) sep = '\t';
     else if (!hasComma && hasSemi) sep = ';';
-
     return line.split(sep).map(x => String(x).replace(/^"|"$/g,'').trim());
   });
-}
-
-/* ==========================
-   CDC (Chambre de commerce)
-   Aceita: CDC13/17, CDC 13/17, cdc13-17, CDC13-17
-========================== */
-function parseCDC(raw){
-  // aceita: CDC13/17 | CDC 13-17 | CDC13/17H | CDC13:00/17:00 | cdc 13/17 etc
-  let v = String(raw || '').toUpperCase().trim();
-
-  // tira espaços e "H"
-  v = v.replace(/\s/g,'').replace(/H/g,'');
-
-  // transforma ":" em nada (13:00 -> 1300) mas só queremos as horas
-  // então vamos extrair só os primeiros 1-2 dígitos antes do / ou -
-  const m = v.match(/^CDC(\d{1,2})(?::?\d{0,2})?[\/\-](\d{1,2})(?::?\d{0,2})?$/);
-  if(!m) return null;
-
-  const start = parseInt(m[1],10);
-  const end   = parseInt(m[2],10);
-  if(Number.isNaN(start) || Number.isNaN(end)) return null;
-
-  return {
-    text: `${start}-${end}H`,
-    className: 'blue-dark',
-    icon: '🏛️'
-  };
-}
-
-
-  const m = v.match(/^CDC(\d{1,2})[\/\-](\d{1,2})$/);
-  if(!m) return null;
-
-  const start = parseInt(m[1],10);
-  const end   = parseInt(m[2],10);
-
-  if(Number.isNaN(start) || Number.isNaN(end)) return null;
-
-  return {
-    text: `${start}-${end}H`,
-    className: 'blue-dark',
-    icon: '🏛️'
-  };
 }
 
 function parseDateSafe(s){
@@ -326,7 +340,9 @@ function parseDateSafe(s){
 
   const m = t.match(/^(\d{4})-(\d{2})-(\d{2})$/);
   if(m){
-    const y = parseInt(m[1],10), mo = parseInt(m[2],10)-1, d = parseInt(m[3],10);
+    const y = parseInt(m[1],10);
+    const mo = parseInt(m[2],10)-1;
+    const d = parseInt(m[3],10);
     const dt = new Date(y, mo, d);
     dt.setHours(0,0,0,0);
     return dt;
@@ -351,11 +367,54 @@ function daysBetween(a, b){
 }
 
 /* ==========================
-   FÉRIAS
+   CDC (Chambre de commerce)
+   - Aceita: CDC13/17, CDC 13/17, CDC13-17, cdc7/17, etc.
+   - Mostra no site: 13-17H
 ========================== */
-let FERIAS_RANGES = [];
-let ESTA_DE_FERIAS = false;
+function parseCDC_(raw){
+  const s = normalizeCell(raw);
+  // permite espaços e / ou -
+  const m = s.match(/^CDC\s*(\d{1,2})\s*[\/\-]\s*(\d{1,2})$/i);
+  if(!m) return null;
+  const ini = parseInt(m[1],10);
+  const fim = parseInt(m[2],10);
+  if(Number.isNaN(ini) || Number.isNaN(fim)) return null;
+  if(ini < 0 || ini > 24 || fim < 0 || fim > 24) return null;
+  return { ini, fim };
+}
+function formatCDC_(cdc){
+  return `${cdc.ini}-${cdc.fim}H`;
+}
 
+/* ==========================
+   HORÁRIO -> COR
+========================== */
+function classificarHorario(horario){
+  const raw = normalizeCell(horario);
+
+  // ✅ CDC sempre azul escuro
+  const cdc = parseCDC_(raw);
+  if(cdc) return 'blue-dark';
+
+  // normal (6-13H, 13-20H...)
+  const clean = raw.replace(/\s/g,'').replace(/h/gi,'');
+  const parts = clean.split('-');
+  if(parts.length !== 2) return '';
+
+  let inicio = parseFloat(parts[0].replace(':','.'));
+  let fim    = parseFloat(parts[1].replace(':','.'));
+
+  if(inicio === 7 && fim === 17) return 'blue-dark';
+  if(inicio >= 12 && fim <= 21) return 'red';
+  if(inicio >= 5 && fim <= 13) return 'green';
+  if(inicio >= 10 && fim <= 17) return 'blue';
+
+  return '';
+}
+
+/* ==========================
+   FÉRIAS (Ferias.csv)
+========================== */
 function parseFeriasCSV(text){
   const lines = parseCSVLines(text);
   if(lines.length <= 1) return [];
@@ -373,8 +432,8 @@ function parseFeriasCSV(text){
     const startDt  = parseDateSafe(startStr);
     const endDt    = parseDateSafe(endStr);
     return {
-      start: startStr,
-      end: endStr,
+      startStr,
+      endStr,
       startDt,
       endDt,
       label: idxLabel >= 0 ? normalizeCell(row[idxLabel]) : ''
@@ -389,11 +448,9 @@ function fmtFeriasRange(r){
 function getCurrentVacationRange(today){
   return FERIAS_RANGES.find(r => inRange(today, r.startDt, r.endDt)) || null;
 }
-
 function getVacationForDate(date){
   return FERIAS_RANGES.find(r => inRange(date, r.startDt, r.endDt)) || null;
 }
-
 function getNextVacation(today){
   const t = toDateOnly(today);
   const future = FERIAS_RANGES
@@ -421,14 +478,14 @@ function updateTopCards(){
   const prox  = document.getElementById('proximasFerias');
   const footerLogo = document.getElementById('footerLogo');
 
-  // Render lista no modal
+  // lista no modal
   const ul = document.getElementById('feriasList');
   ul.innerHTML = '';
   if(!FERIAS_RANGES.length){
     const li = document.createElement('li');
-    li.textContent = 'Sem férias encontradas (confirma se o Ferias.csv tem colunas start/end em YYYY-MM-DD).';
+    li.textContent = 'Sem férias encontradas.';
     ul.appendChild(li);
-  } else {
+  }else{
     FERIAS_RANGES.forEach(r=>{
       const li = document.createElement('li');
       li.textContent = fmtFeriasRange(r);
@@ -446,7 +503,7 @@ function updateTopCards(){
 
     prox.classList.remove('show');
     prox.style.display = 'none';
-  } else {
+  }else{
     badge.style.display = 'none';
     aviso.classList.remove('show');
 
@@ -455,18 +512,18 @@ function updateTopCards(){
       const dias = daysBetween(hoje, next.startDt);
       prox.textContent = `🔔 Próximas férias em ${dias} dia${dias===1?'':'s'}: ${fmtFeriasRange(next)}`;
       prox.classList.add('show');
-    } else {
+    }else{
       prox.classList.remove('show');
       prox.style.display = 'none';
     }
   }
 
-  // Logo com animação
+  // logo com animação
   if(footerLogo){
     if(ESTA_DE_FERIAS){
       footerLogo.classList.remove('show');
       setTimeout(() => { footerLogo.style.display = 'none'; }, 260);
-    } else {
+    }else{
       footerLogo.style.display = 'flex';
       setTimeout(() => footerLogo.classList.add('show'), 20);
     }
@@ -474,67 +531,40 @@ function updateTopCards(){
 }
 
 /* ==========================
-   HORÁRIOS
+   HORÁRIOS (Horarios_Trabalho.csv)
 ========================== */
-function classificarHorario(horario){
-  const raw = normalizeCell(horario);
-
-  // ✅ CÓDIGO CHAMBRE DE COMMERCE
-  // Ex: CDC13/17, CDC7/17, CDC 13/17
-  const cdcMatch = raw.match(/^CDC\s*(\d{1,2})[\/\-](\d{1,2})$/i);
-  if (cdcMatch) {
-    return 'blue-dark'; // cor Chambre de commerce
-  }
-
-  // normal (7-13H, 13-20H, etc.)
-  const clean = raw.replace(/\s/g,'').replace(/h/gi,'');
-  const parts = clean.split('-');
-  if(parts.length !== 2) return '';
-
-  let inicio = parseFloat(parts[0].replace(':','.'));
-  let fim    = parseFloat(parts[1].replace(':','.'));
-
-  if(inicio === 7 && fim === 17) return 'blue-dark';
-  if(inicio >= 12 && fim <= 21) return 'red';
-  if(inicio >= 5 && fim <= 13) return 'green';
-  if(inicio >= 10 && fim <= 17) return 'blue';
-
-  return '';
-}
-
-async function carregarCSV() {
+async function carregarCSV(){
   const res = await fetch(GITHUB_CSV_URL + '?cache=' + new Date().getTime());
   const text = await res.text();
   linhasCache = text.split('\n').map(l => l.split(','));
 
+  // detectar blocos "SEMANA"
   semanas = [];
   let i = 0;
-  while(i < linhasCache.length) {
-    if(linhasCache[i][0] && linhasCache[i][0].toUpperCase().includes('SEMANA')) {
+  while(i < linhasCache.length){
+    if(linhasCache[i][0] && String(linhasCache[i][0]).toUpperCase().includes('SEMANA')){
       let start = i;
       let end = start + 2;
-
       while(end + 1 < linhasCache.length &&
             linhasCache[end + 1][0] &&
-            !linhasCache[end + 1][0].toUpperCase().includes('SEMANA')) {
+            !String(linhasCache[end + 1][0]).toUpperCase().includes('SEMANA')){
         end++;
       }
-
-      semanas.push({start,end});
+      semanas.push({start, end});
       i = end + 1;
-    } else i++;
+    }else i++;
   }
 
-  const hoje = new Date();
-  hoje.setHours(0,0,0,0);
+  // escolher semana atual
+  const hoje = new Date(); hoje.setHours(0,0,0,0);
   for(let s=0;s<semanas.length;s++){
     const semana = semanas[s];
     const linhaDatas = linhasCache[semana.start+1] || [];
-    if(linhaDatas.some(celula=>{
-      const data = new Date(celula);
-      if(isNaN(data)) return false;
-      data.setHours(0,0,0,0);
-      return data.getTime() === hoje.getTime();
+    if(linhaDatas.some(c=>{
+      const d = new Date(c);
+      if(isNaN(d)) return false;
+      d.setHours(0,0,0,0);
+      return d.getTime() === hoje.getTime();
     })){
       semanaAtual = s;
       break;
@@ -546,7 +576,7 @@ async function carregarCSV() {
 
 function mostrarSemana(index){
   const tbody = document.querySelector('#horarios tbody');
-  tbody.innerHTML='';
+  tbody.innerHTML = '';
 
   const semana = semanas[index];
   if(!semana) return;
@@ -556,36 +586,36 @@ function mostrarSemana(index){
 
   document.getElementById('semanaTitulo').textContent = normalizeCell(linhasCache[semana.start][0]);
 
-  const linhaDatas = (linhasCache[semana.start+1] || []).map(normalizeCell);
+  const linhaDatas    = (linhasCache[semana.start+1] || []).map(normalizeCell);
   const linhaHorarios = (linhasCache[semana.start+2] || []).map(normalizeCell);
 
   const linhaNotasRaw = linhasCache[semana.start+3];
   const linhaNotas = linhaNotasRaw ? linhaNotasRaw.map(normalizeCell) : null;
   const temNotas = linhaNotas && linhaNotas.some(c => c && c.length > 0);
 
-  // Cabeçalho
+  // header
   const trHead = document.createElement('tr');
-  linhaDatas.forEach(celula=>{
+  linhaDatas.forEach(c=>{
     const th = document.createElement('th');
-    const data = new Date(celula);
-    if(!isNaN(data)){
-      const diaSemana = diasSemana[data.getDay()];
-      const diaMes = data.getDate();
-      const mes = meses[data.getMonth()];
-      th.textContent = `${diaSemana} ${diaMes}/${mes}`;
-    } else th.textContent = celula;
+    const d = new Date(c);
+    if(!isNaN(d)){
+      const ds = diasSemana[d.getDay()];
+      th.textContent = `${ds} ${d.getDate()}/${meses[d.getMonth()]}`;
+    }else{
+      th.textContent = c;
+    }
     trHead.appendChild(th);
   });
   tbody.appendChild(trHead);
 
-  // Linha de horários
+  // linha horários
   const trHorario = document.createElement('tr');
   const hoje = new Date(); hoje.setHours(0,0,0,0);
 
   let totalDiasValidos = 0;
   let diasFerias = 0;
 
-  linhaHorarios.forEach((celula,j)=>{
+  linhaHorarios.forEach((celula, j)=>{
     const td = document.createElement('td');
 
     const dataCelula = new Date(linhaDatas[j]);
@@ -595,25 +625,23 @@ function mostrarSemana(index){
       dataCelula.setHours(0,0,0,0);
       totalDiasValidos++;
 
-      // 1) férias substituem tudo
+      // férias por data
       const vac = getVacationForDate(dataCelula);
       if(vac){
         diasFerias++;
         td.textContent = 'FÉRIAS';
         td.classList.add('vacCell');
         td.title = vac.label ? `Férias: ${vac.label}` : 'Férias';
-      } else {
-        // 2) CDC (teu pedido)
-        const cdc = parseCDC(celula);
+      }else{
+        // CDC?
+        const cdc = parseCDC_(celula);
         if(cdc){
-          td.textContent = `${cdc.icon} ${cdc.text}`;
-          td.classList.add(cdc.className);
-          td.title = 'Chambre de commerce';
-        } else {
-          // 3) normal
+          td.textContent = formatCDC_(cdc);  // ✅ mostra 13-17H no site
+          td.classList.add('blue-dark');
+        }else{
           td.textContent = celula;
 
-          const valor = (celula || '').toLowerCase();
+          const valor = celula.toLowerCase();
           const cor = classificarHorario(celula);
 
           if(cor) td.classList.add(cor);
@@ -626,16 +654,17 @@ function mostrarSemana(index){
       if(dataCelula.getTime() === hoje.getTime()){
         td.classList.add('today');
       }
-    } else {
+    }else{
       td.textContent = celula;
     }
 
     trHorario.appendChild(td);
   });
+
   tbody.appendChild(trHorario);
 
-  const semanaInteiraFerias = totalDiasValidos > 0 && diasFerias === totalDiasValidos;
-  if(semanaInteiraFerias){
+  // semana inteira férias
+  if(totalDiasValidos > 0 && diasFerias === totalDiasValidos){
     table.classList.add('weekVacTable');
     const aviso = document.getElementById('feriasAviso');
     if(!ESTA_DE_FERIAS){
@@ -644,13 +673,14 @@ function mostrarSemana(index){
     }
   }
 
+  // notas
   if(temNotas){
     const trNotas = document.createElement('tr');
     trNotas.classList.add('notesRow');
-    linhaNotas.forEach((nota)=>{
+    linhaNotas.forEach(n=>{
       const td = document.createElement('td');
       td.classList.add('noteCell');
-      td.textContent = nota || '';
+      td.textContent = n || '';
       trNotas.appendChild(td);
     });
     tbody.appendChild(trNotas);
@@ -660,12 +690,12 @@ function mostrarSemana(index){
 /* ==========================
    BOTÕES
 ========================== */
-document.getElementById('prevWeek').addEventListener('click',()=>{
-  if(semanaAtual>0) semanaAtual--;
+document.getElementById('prevWeek').addEventListener('click', ()=>{
+  if(semanaAtual > 0) semanaAtual--;
   mostrarSemana(semanaAtual);
 });
-document.getElementById('nextWeek').addEventListener('click',()=>{
-  if(semanaAtual<semanas.length-1) semanaAtual++;
+document.getElementById('nextWeek').addEventListener('click', ()=>{
+  if(semanaAtual < semanas.length - 1) semanaAtual++;
   mostrarSemana(semanaAtual);
 });
 
@@ -697,7 +727,7 @@ document.addEventListener('keydown', (e)=>{
 /* ==========================
    ARRANQUE
 ========================== */
-(async () => {
+(async ()=>{
   await carregarFeriasCSV();
   updateTopCards();
   await carregarCSV();
