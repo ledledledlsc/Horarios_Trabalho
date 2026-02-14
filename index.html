@@ -1,155 +1,243 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-<meta charset="UTF-8">
-<title>Horários de Trabalho</title>
+  <meta charset="UTF-8">
+  <title>Horários de Trabalho</title>
 
-<!-- PWA / APP -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#007bff">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Horários">
-<link rel="apple-touch-icon" href="icon-192.png">
+  <!-- PWA + Mobile App-like -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#007bff">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="apple-touch-icon" href="icon-192.png">
 
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #e9f0ff, #f7f9fc);
-    text-align: center;
-    margin: 0;
-    padding: 10px;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  h1 { color: #007bff; margin: 15px 0 5px; font-size: 2.2rem; }
-  #semanaTitulo { font-size: 1.6rem; color: #333; margin: 10px 0 20px; font-weight: bold; }
-  .buttons { margin: 15px 0; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; width: 100%; max-width: 900px; }
-  button { padding: 12px 20px; font-size: 1rem; border-radius: 10px; border: none; background: #007bff; color: white; cursor: pointer; transition: all 0.25s; flex: 1 1 130px; max-width: 170px; }
-  button:hover { background: #0056b3; transform: scale(1.05); }
-  #feriasBtn { background: #8e44ad; }
-  #feriasBtn:hover { background: #6f2f8a; }
-  #feriasBadge {
-    display: none;
-    margin-left: 8px;
-    background: #ffcc00;
-    color: #2c3e50;
-    padding: 3px 9px;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    font-weight: bold;
-    animation: pulseBadge 2s infinite;
-  }
-  @keyframes pulseBadge { 0%,100% {transform: scale(1);} 50% {transform: scale(1.08);} }
-  #feriasAviso, #proximasFerias {
-    display: none;
-    width: 90%;
-    max-width: 900px;
-    margin: 10px auto;
-    padding: 14px;
-    border-radius: 12px;
-    font-weight: bold;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  }
-  #feriasAviso.show, #proximasFerias.show { display: block; }
-  #feriasAviso { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; }
-  #proximasFerias { background: #e3f2fd; border: 1px solid #bbdefb; color: #0d47a1; }
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    margin: 0 auto 30px;
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-  }
-  th, td {
-    border: 1px solid #ddd;
-    padding: 12px 10px;
-    font-size: 1rem;
-  }
-  th { background: #1d4e89; color: white; font-weight: bold; } /* contraste alto */
-  .green { background: #27ae60; color: white; }
-  .red { background: #e74c3c; color: white; }
-  .blue { background: #3498db; color: white; }
-  .blue-dark { background: #1d4e89; color: white; font-weight: bold; } /* sem amarelo */
-  .darkgray { background: #455a64; color: white; }
-  .gray { background: #cfd8dc; color: #333; }
-  .vacCell {
-    background: linear-gradient(45deg, #ffeaa7, #fdcb6e);
-    background-size: 400%;
-    animation: gradPulse 6s infinite;
-    color: #333;
-    font-weight: bold;
-  }
-  @keyframes gradPulse { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
-  .today { border: 4px solid orange !important; box-shadow: 0 0 12px rgba(255,165,0,0.5); }
-  td:hover { transform: scale(1.04); box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: all 0.25s; }
-  #legenda {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 16px;
-    margin: 20px auto;
-    max-width: 900px;
-    padding: 0 10px;
-  }
-  .itemLegenda { display: flex; align-items: center; gap: 8px; font-size: 0.95rem; }
-  .colorBox { width: 20px; height: 20px; border-radius: 4px; }
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-    z-index: 9999;
-  }
-  .modal-overlay.show { display: flex; }
-  .modal {
-    width: min(520px, 90%);
-    background: white;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-    max-height: 90vh;
-    overflow-y: auto;
-  }
-  .footer-logo {
-    margin-top: auto;
-    padding: 20px 0;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.5s;
-  }
-  .footer-logo.show { opacity: 0.5; transform: translateY(0); }
-  .footer-logo img { height: 48px; transition: transform 0.3s; }
-  .footer-logo img:hover { transform: scale(1.08); }
-  @media (prefers-color-scheme: dark) {
-    body { background: linear-gradient(135deg, #121212, #1e1e1e); color: #e0e0e0; }
-    table { background: #1e1e1e; }
-    th { background: #0d47a1; color: white; }
-    th, td { border-color: #444; }
-    #feriasAviso { background: #3a2f12; color: #ffe9b0; }
-    #proximasFerias { background: #13283b; color: #bfe1ff; }
-  }
-  @media (max-width: 600px) {
-    body { padding: 5px; }
-    h1 { font-size: 1.8rem; margin: 10px 0; }
-    #semanaTitulo { font-size: 1.3rem; margin: 5px 0 10px; }
-    .buttons { padding: 0 5px; gap: 6px; }
-    button { padding: 10px; font-size: 0.9rem; }
-    table { width: 100%; margin: 0; border-radius: 0; box-shadow: none; }
-    th, td { padding: 8px 4px; font-size: 0.85rem; }
-    #legenda { gap: 8px; padding: 0 5px; font-size: 0.8rem; justify-content: space-evenly; }
-    .modal { width: 100%; padding: 16px; border-radius: 0; height: 100vh; max-height: none; }
-    .modal-overlay { padding: 0; }
-  }
-</style>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #e9f0ff, #f7f9fc);
+      margin: 0;
+      padding: 10px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    h1 {
+      color: #007bff;
+      margin: 15px 0 5px;
+      font-size: 2.2rem;
+    }
+
+    #semanaTitulo {
+      font-size: 1.6rem;
+      color: #333;
+      margin: 10px 0 20px;
+      font-weight: bold;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 15px 0;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 1rem;
+      border-radius: 10px;
+      border: none;
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+      transition: all 0.25s;
+      flex: 1 1 130px;
+      max-width: 170px;
+    }
+
+    button:hover {
+      background: #0056b3;
+      transform: scale(1.05);
+    }
+
+    #feriasBtn { background: #8e44ad; }
+    #feriasBtn:hover { background: #6f2f8a; }
+
+    #feriasBadge {
+      display: none;
+      margin-left: 8px;
+      background: #ffcc00;
+      color: #2c3e50;
+      padding: 3px 9px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      animation: pulseBadge 2s infinite;
+    }
+
+    @keyframes pulseBadge {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    #feriasAviso, #proximasFerias {
+      display: none;
+      width: 90%;
+      max-width: 900px;
+      margin: 10px auto;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    #feriasAviso.show, #proximasFerias.show { display: block; }
+
+    #feriasAviso { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; }
+    #proximasFerias { background: #e3f2fd; border: 1px solid #bbdefb; color: #0d47a1; }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 0 auto 30px;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px 10px;
+      font-size: 1rem;
+    }
+
+    th { background: #1d4e89; color: white; font-weight: bold; }
+
+    .green { background: #27ae60; color: white; }
+    .red { background: #e74c3c; color: white; }
+    .blue { background: #3498db; color: white; }
+    .blue-dark { background: #1d4e89; color: white; font-weight: bold; }
+    .darkgray { background: #455a64; color: white; }
+    .gray { background: #cfd8dc; color: #333; }
+
+    .vacCell {
+      background: linear-gradient(45deg, #ffeaa7, #fdcb6e);
+      background-size: 400%;
+      animation: gradPulse 6s infinite;
+      color: #333;
+      font-weight: bold;
+    }
+
+    @keyframes gradPulse {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .today {
+      border: 4px solid orange !important;
+      box-shadow: 0 0 12px rgba(255,165,0,0.5);
+    }
+
+    td:hover {
+      transform: scale(1.04);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: all 0.25s;
+    }
+
+    #legenda {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin: 20px auto;
+      max-width: 900px;
+      padding: 0 10px;
+    }
+
+    .itemLegenda {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+    }
+
+    .colorBox {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 9999;
+    }
+
+    .modal-overlay.show { display: flex; }
+
+    .modal {
+      width: min(520px, 90%);
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .footer-logo {
+      margin-top: auto;
+      padding: 20px 0;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s;
+    }
+
+    .footer-logo.show { opacity: 0.5; transform: translateY(0); }
+
+    .footer-logo img {
+      height: 48px;
+      transition: transform 0.3s;
+    }
+
+    .footer-logo img:hover { transform: scale(1.08); }
+
+    @media (prefers-color-scheme: dark) {
+      body { background: linear-gradient(135deg, #121212, #1e1e1e); color: #e0e0e0; }
+      table { background: #1e1e1e; }
+      th { background: #0d47a1; color: white; }
+      th, td { border-color: #444; }
+      #feriasAviso { background: #3a2f12; color: #ffe9b0; }
+      #proximasFerias { background: #13283b; color: #bfe1ff; }
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 5px; }
+      h1 { font-size: 1.8rem; margin: 10px 0; }
+      #semanaTitulo { font-size: 1.3rem; margin: 5px 0 10px; }
+      .buttons { padding: 0 5px; gap: 6px; }
+      button { padding: 10px; font-size: 0.9rem; }
+      table { width: 100%; margin: 0; border-radius: 0; box-shadow: none; }
+      th, td { padding: 8px 4px; font-size: 0.85rem; }
+      #legenda { gap: 8px; padding: 0 5px; font-size: 0.8rem; justify-content: space-evenly; }
+      .modal { width: 100%; padding: 16px; border-radius: 0; height: 100vh; max-height: none; }
+      .modal-overlay { padding: 0; }
+    }
+  </style>
 </head>
 <body>
 
@@ -158,7 +246,7 @@
 <div id="feriasAviso"></div>
 <div id="proximasFerias"></div>
 
-<div id="semanaTitulo"></div>
+<div id="semanaTitulo">Carregando...</div>
 
 <div class="buttons">
   <button id="prevWeek">Semana anterior</button>
@@ -199,6 +287,15 @@
 
 <script>
 // Funções auxiliares
+const GITHUB_CSV_URL = 'https://raw.githubusercontent.com/ledledledlsc/Horarios_Trabalho/main/Horarios_Trabalho.csv';
+const FERIAS_CSV_URL = 'https://raw.githubusercontent.com/ledledledlsc/Horarios_Trabalho/main/Ferias.csv';
+const diasSemana = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+const meses = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+
+let semanas = [];
+let semanaAtual = 0;
+let linhasCache = [];
+
 function normalizeCell(x) { return (x === null || x === undefined) ? '' : String(x).trim(); }
 function toDateOnly(d) { const x = new Date(d); x.setHours(0,0,0,0); return x; }
 function inRange(today, start, end) { const t = toDateOnly(today).getTime(); const s = toDateOnly(start).getTime(); const e = toDateOnly(end).getTime(); return t >= s && t <= e; }
@@ -307,7 +404,7 @@ function classificarHorario(horario) {
   let classe = '';
   let tooltip = '';
 
-  // CDC
+  // CDC13/17
   const cdcMatch = raw.match(/^CDC\s*(\d{1,2})[\/\-]?(\d{1,2})?$/i);
   if (cdcMatch) {
     const a = cdcMatch[1].padStart(2, '0');
@@ -323,7 +420,7 @@ function classificarHorario(horario) {
   else if (raw.startsWith('D')) { classe = 'blue'; texto = raw.slice(1).trim(); tooltip = 'Dia inteiro'; }
   else if (raw.startsWith('N') || raw.includes('LIVRE') || raw.includes('LIBRE')) { classe = 'darkgray'; texto = 'Livre'; tooltip = 'Livre'; }
   else if (raw.includes('ESCOLA')) { classe = 'gray'; texto = 'Escola'; tooltip = 'Escola'; }
-  else if (raw === 'F' || raw.includes('FÉRIAS') || raw.includes('FERIAS')) { classe = 'vacCell'; texto = 'Férias'; tooltip = 'Férias'; }
+  else if (raw === 'F' || raw.includes('FÉRIAS')) { classe = 'vacCell'; texto = 'Férias'; tooltip = 'Férias'; }
 
   return { classe, texto, tooltip };
 }
@@ -331,9 +428,12 @@ function classificarHorario(horario) {
 async function carregarCSV() {
   try {
     const res = await fetch(GITHUB_CSV_URL + '?cache=' + Date.now());
-    if (!res.ok) throw new Error('CSV não encontrado');
+    if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
     const text = await res.text();
+    if (!text.trim()) throw new Error('CSV vazio');
     linhasCache = parseCSVLines(text);
+    if (linhasCache.length === 0) throw new Error('Nenhuma linha no CSV');
+
     semanas = [];
     let i = 0;
     while (i < linhasCache.length) {
@@ -348,7 +448,8 @@ async function carregarCSV() {
     }
 
     if (semanas.length === 0) {
-      document.getElementById('semanaTitulo').textContent = 'Sem dados no CSV';
+      document.getElementById('semanaTitulo').textContent = 'Sem semanas encontradas';
+      document.getElementById('errorMsg').textContent = 'Verifica se o CSV tem linhas com "SEMANA"';
       return;
     }
 
@@ -369,7 +470,8 @@ async function carregarCSV() {
     mostrarSemana(semanaAtual);
   } catch (e) {
     console.error('Erro CSV:', e);
-    document.getElementById('semanaTitulo').textContent = 'Erro ao carregar CSV';
+    document.getElementById('semanaTitulo').textContent = 'Erro ao carregar horários';
+    document.getElementById('errorMsg').textContent = e.message + ' — verifica Horarios_Trabalho.csv no GitHub';
   }
 }
 
@@ -379,12 +481,12 @@ function mostrarSemana(idx) {
   const semana = semanas[idx];
   if (!semana) return;
 
-  // Título limpo
+  // Título
   const tituloRaw = semana[0][0] || '';
   let titulo = tituloRaw.replace(/:.*/, '').trim().toUpperCase();
-  document.getElementById('semanaTitulo').textContent = titulo || 'Semana ' + (idx + 1);
+  document.getElementById('semanaTitulo').textContent = titulo;
 
-  // Cabeçalho curto
+  // Cabeçalho
   const trHead = document.createElement('tr');
   const datas = semana[1] || [];
   datas.forEach(d => {
@@ -423,13 +525,13 @@ function mostrarSemana(idx) {
   });
   tbody.appendChild(tr);
 
-  // Animação staggered
+  // Animação
   const cells = [...tbody.querySelectorAll('td')];
   cells.forEach((c, i) => {
     c.style.opacity = 0;
     c.style.transform = 'scale(0.92) translateY(8px)';
     setTimeout(() => {
-      c.style.transition = 'opacity 0.5s ease, transform 0.5s cubic-bezier(0.4,0,0.2,1)';
+      c.style.transition = 'opacity 0.5s, transform 0.5s cubic-bezier(0.4,0,0.2,1)';
       c.style.opacity = 1;
       c.style.transform = 'scale(1) translateY(0)';
     }, i * 50);
