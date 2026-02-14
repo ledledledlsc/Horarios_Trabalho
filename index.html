@@ -119,7 +119,7 @@
       color: #0d47a1;
     }
 
-    table {
+    table.horizontal-table {
       border-collapse: collapse;
       width: 100%;
       max-width: 900px;
@@ -261,39 +261,84 @@
       .footer-logo img { filter: brightness(1.35) contrast(1.1); }
     }
 
-    /* Mobile - tabela vertical */
+    /* Mobile - tabela vertical (ativa abaixo de 600px) */
     @media (max-width: 600px) {
       body { padding: 5px; }
       h1 { font-size: 1.8rem; margin: 10px 0; }
       #semanaTitulo { font-size: 1.3rem; margin: 5px 0 10px; }
       .buttons { padding: 0 5px; gap: 6px; }
       button { padding: 10px; font-size: 0.9rem; }
-      table.horizontal-table { display: none; }
-      .vertical-schedule { width: 100%; margin: 0 auto 30px; }
+
+      /* Esconde tabela horizontal no mobile */
+      table.horizontal-table {
+        display: none !important;
+      }
+
+      /* Mostra vertical */
+      .vertical-schedule {
+        display: block !important;
+        width: 100%;
+        margin: 0 auto 30px;
+      }
+
       .day-block {
         background: white;
         border: 1px solid #ddd;
         border-radius: 8px;
-        margin: 10px 0;
-        padding: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        margin: 12px 0;
+        padding: 15px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
       }
+
       .day-header {
         font-weight: bold;
         color: #1d4e89;
-        margin-bottom: 8px;
-        font-size: 1.1rem;
+        margin-bottom: 10px;
+        font-size: 1.2rem;
+        text-align: center;
       }
+
       .day-content {
-        font-size: 1rem;
+        font-size: 1.1rem;
         font-weight: bold;
+        text-align: center;
+        padding: 10px;
+        border-radius: 6px;
       }
-      .day-content.vacCell { padding: 8px; border-radius: 6px; }
-      .day-content.today { border: 3px solid orange; box-shadow: 0 0 10px rgba(255,165,0,0.5); padding: 8px; border-radius: 6px; }
-      .day-content.feriado { background: #c62828; color: white; padding: 8px; border-radius: 6px; }
-      #legenda { gap: 8px; padding: 0 5px; font-size: 0.8rem; justify-content: space-evenly; }
-      .modal { width: 100%; padding: 16px; border-radius: 0; height: 100vh; max-height: none; }
-      .modal-overlay { padding: 0; }
+
+      .day-content.vacCell {
+        background: linear-gradient(45deg, #ffeaa7, #fdcb6e);
+        animation: gradPulse 6s infinite;
+      }
+
+      .day-content.today {
+        border: 3px solid orange;
+        box-shadow: 0 0 10px rgba(255,165,0,0.5);
+      }
+
+      .day-content.feriado {
+        background: #c62828;
+        color: white;
+      }
+
+      #legenda {
+        gap: 8px;
+        padding: 0 5px;
+        font-size: 0.8rem;
+        justify-content: space-evenly;
+      }
+
+      .modal {
+        width: 100%;
+        padding: 16px;
+        border-radius: 0;
+        height: 100vh;
+        max-height: none;
+      }
+
+      .modal-overlay {
+        padding: 0;
+      }
     }
   </style>
 </head>
@@ -331,7 +376,7 @@
   </table>
 
   <!-- Tabela vertical (Mobile) -->
-  <div id="verticalSchedule" class="vertical-schedule"></div>
+  <div id="verticalSchedule" class="vertical-schedule" style="display:none;"></div>
 
   <div class="modal-overlay" id="feriasOverlay">
     <div class="modal">
@@ -628,7 +673,7 @@
       });
       tbody.appendChild(trHorario);
 
-      // Vertical (Mobile)
+      // Vertical (Mobile) - cria blocos para cada dia
       datas.forEach((d, j) => {
         const dt = parseDateSafe(d);
         if (!dt) return;
