@@ -486,30 +486,40 @@
 
     // HORÁRIOS
     function classificarHorario(horario) {
-      const raw = normalizeCell(horario).toUpperCase().trim();
-      let texto = raw;
-      let classe = '';
-      let tooltip = '';
+  const raw = normalizeCell(horario).toUpperCase().trim();
+  let texto = raw;
+  let classe = '';
+  let tooltip = '';
+  let innerHTML = null; // para adicionar ícone
 
-      const cdcMatch = raw.match(/^CDC\s*(\d{1,2})[\/\-]?(\d{1,2})?$/i);
-      if (cdcMatch) {
-        const a = cdcMatch[1].padStart(2, '0');
-        const b = cdcMatch[2] ? cdcMatch[2].padStart(2, '0') : '';
-        texto = b ? `${a}-${b}H` : a;
-        classe = 'blue-dark';
-        tooltip = 'Chambre de Commerce';
-        return { classe, texto, tooltip };
-      }
+  // CDC (qualquer formato: CDC, CDC13/17, CDC 13-17, etc.)
+  const cdcMatch = raw.match(/^CDC\s*(\d{1,2})[\/\-]?(\d{1,2})?$/i);
+  if (cdcMatch || raw.startsWith('CDC')) {
+    classe = 'blue-dark';
+    tooltip = 'Chambre de Commerce';
 
-      if (raw.startsWith('M')) { classe = 'green'; texto = raw.slice(1).trim(); tooltip = 'Manhã'; }
-      else if (raw.startsWith('T')) { classe = 'red'; texto = raw.slice(1).trim(); tooltip = 'Tarde'; }
-      else if (raw.startsWith('D')) { classe = 'blue'; texto = raw.slice(1).trim(); tooltip = 'Dia inteiro'; }
-      else if (raw.startsWith('N') || raw.includes('LIVRE') || raw.includes('LIBRE')) { classe = 'darkgray'; texto = 'Livre'; tooltip = 'Livre'; }
-      else if (raw.includes('ESCOLA')) { classe = 'gray'; texto = 'Escola'; tooltip = 'Escola'; }
-      else if (raw === 'F' || raw.includes('FÉRIAS') || raw.includes('FERIAS')) { classe = 'vacCell'; texto = 'Férias'; tooltip = 'Férias'; }
-
-      return { classe, texto, tooltip };
+    if (cdcMatch) {
+      const a = cdcMatch[1].padStart(2, '0');
+      const b = cdcMatch[2] ? cdcMatch[2].padStart(2, '0') : '';
+      texto = b ? `${a}-${b}H` : a;
+    } else {
+      texto = 'CDC';
     }
+
+    // Adiciona o ícone 🏫
+    innerHTML = `<span class="cdc-icon">🏫</span><span>${texto}</span>`;
+  }
+
+  // Outros casos (mantidos como antes)
+  if (raw.startsWith('M')) { classe = 'green'; texto = raw.slice(1).trim(); tooltip = 'Turno da manhã'; }
+  else if (raw.startsWith('T')) { classe = 'red'; texto = raw.slice(1).trim(); tooltip = 'Turno da tarde'; }
+  else if (raw.startsWith('D')) { classe = 'blue'; texto = raw.slice(1).trim(); tooltip = 'Dia inteiro'; }
+  else if (raw.startsWith('N') || raw.includes('LIVRE') || raw.includes('LIBRE')) { classe = 'darkgray'; texto = 'Livre'; tooltip = 'Dia livre'; }
+  else if (raw.includes('ESCOLA')) { classe = 'gray'; texto = 'Escola'; tooltip = 'Escola'; }
+  else if (raw === 'F' || raw.includes('FÉRIAS') || raw.includes('FERIAS')) { classe = 'vacCell'; texto = 'Férias'; tooltip = 'Período de férias'; }
+
+  return { classe, texto, tooltip, innerHTML };
+}
 
     async function carregarCSV() {
       try {
