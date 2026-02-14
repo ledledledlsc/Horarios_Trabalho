@@ -148,12 +148,7 @@
     .blue-dark { background: #1d4e89; color: white; font-weight: bold; }
     .darkgray { background: #455a64; color: white; font-weight: bold; }
     .gray { background: #cfd8dc; color: #333; font-weight: bold; }
-
-    .feriado {
-      background: #c62828; /* vermelho escuro para feriados */
-      color: white;
-      font-weight: bold;
-    }
+    .feriado { background: #c62828; color: white; font-weight: bold; }
 
     .vacCell {
       background: linear-gradient(45deg, #ffeaa7, #fdcb6e);
@@ -325,7 +320,6 @@
     <div class="itemLegenda"><span class="colorBox gray"></span> Escola</div>
     <div class="itemLegenda"><span class="colorBox darkgray"></span> Livre</div>
     <div class="itemLegenda"><span class="colorBox feriado" style="background:#c62828"></span> Feriado</div>
-    <div class="itemLegenda"><span class="colorBox vac"></span> Férias</div>
   </div>
 
   <div id="errorMsg" class="error"></div>
@@ -484,7 +478,7 @@
       }
     }
 
-    // HORÁRIOS - com TFeriado reconhecido
+    // HORÁRIOS
     function classificarHorario(horario) {
       const raw = normalizeCell(horario).toUpperCase().trim();
       let texto = raw;
