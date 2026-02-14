@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Horários de Trabalho</title>
 
+  <!-- PWA / APP -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#007bff">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -118,7 +119,6 @@
       color: #0d47a1;
     }
 
-    /* Tabela horizontal no PC */
     table {
       border-collapse: collapse;
       width: 100%;
@@ -134,7 +134,6 @@
       border: 1px solid #ddd;
       padding: 12px 10px;
       font-size: 1rem;
-      text-align: center;
     }
 
     th {
@@ -149,6 +148,12 @@
     .blue-dark { background: #1d4e89; color: white; font-weight: bold; }
     .darkgray { background: #455a64; color: white; font-weight: bold; }
     .gray { background: #cfd8dc; color: #333; font-weight: bold; }
+
+    .feriado {
+      background: #c62828; /* vermelho escuro para feriados */
+      color: white;
+      font-weight: bold;
+    }
 
     .vacCell {
       background: linear-gradient(45deg, #ffeaa7, #fdcb6e);
@@ -245,27 +250,31 @@
       font-size: 1.2rem;
     }
 
-    /* MOBILE - Tabela VERTICAL (de cima para baixo) */
+    /* Dark mode automático */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: linear-gradient(135deg, #121212, #1e1e1e);
+        color: #e0e0e0;
+      }
+      table { background: #1e1e1e; }
+      th { background: #0d47a1; color: white; }
+      th, td { border-color: #444; }
+      #feriasAviso { background: #3a2f12; color: #ffe9b0; border-color: #6a5520; }
+      #proximasFerias { background: #13283b; color: #bfe1ff; border-color: #214563; }
+      .feriado { background: #b71c1c; color: white; }
+      .footer-logo.show { opacity: 0.7; }
+      .footer-logo img { filter: brightness(1.35) contrast(1.1); }
+    }
+
+    /* Mobile - tabela vertical */
     @media (max-width: 600px) {
       body { padding: 5px; }
-
       h1 { font-size: 1.8rem; margin: 10px 0; }
       #semanaTitulo { font-size: 1.3rem; margin: 5px 0 10px; }
-
       .buttons { padding: 0 5px; gap: 6px; }
       button { padding: 10px; font-size: 0.9rem; }
-
-      /* Esconde tabela horizontal e mostra vertical */
-      table.horizontal-table {
-        display: none;
-      }
-
-      /* Nova estrutura vertical */
-      .vertical-schedule {
-        width: 100%;
-        margin: 0 auto 30px;
-      }
-
+      table.horizontal-table { display: none; }
+      .vertical-schedule { width: 100%; margin: 0 auto 30px; }
       .day-block {
         background: white;
         border: 1px solid #ddd;
@@ -274,33 +283,19 @@
         padding: 12px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.08);
       }
-
       .day-header {
         font-weight: bold;
         color: #1d4e89;
         margin-bottom: 8px;
         font-size: 1.1rem;
       }
-
       .day-content {
         font-size: 1rem;
         font-weight: bold;
       }
-
-      .day-content.vacCell {
-        background: linear-gradient(45deg, #ffeaa7, #fdcb6e);
-        animation: gradPulse 6s infinite;
-        padding: 8px;
-        border-radius: 6px;
-      }
-
-      .day-content.today {
-        border: 3px solid orange;
-        box-shadow: 0 0 10px rgba(255,165,0,0.5);
-        padding: 8px;
-        border-radius: 6px;
-      }
-
+      .day-content.vacCell { padding: 8px; border-radius: 6px; }
+      .day-content.today { border: 3px solid orange; box-shadow: 0 0 10px rgba(255,165,0,0.5); padding: 8px; border-radius: 6px; }
+      .day-content.feriado { background: #c62828; color: white; padding: 8px; border-radius: 6px; }
       #legenda { gap: 8px; padding: 0 5px; font-size: 0.8rem; justify-content: space-evenly; }
       .modal { width: 100%; padding: 16px; border-radius: 0; height: 100vh; max-height: none; }
       .modal-overlay { padding: 0; }
@@ -329,6 +324,7 @@
     <div class="itemLegenda"><span class="colorBox red"></span> tarde</div>
     <div class="itemLegenda"><span class="colorBox gray"></span> Escola</div>
     <div class="itemLegenda"><span class="colorBox darkgray"></span> Livre</div>
+    <div class="itemLegenda"><span class="colorBox feriado" style="background:#c62828"></span> Feriado</div>
     <div class="itemLegenda"><span class="colorBox vac"></span> Férias</div>
   </div>
 
@@ -360,17 +356,17 @@
   </div>
 
   <script>
-    // CONFIG
+    // CONFIGURAÇÕES
     const GITHUB_CSV_URL = 'https://raw.githubusercontent.com/ledledledlsc/Horarios_Trabalho/main/Horarios_Trabalho.csv';
     const FERIAS_CSV_URL = 'https://raw.githubusercontent.com/ledledledlsc/Horarios_Trabalho/main/Ferias.csv';
-    const diasSemana = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-    const meses = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+    const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    const meses = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
 
     let semanas = [];
     let semanaAtual = 0;
     let linhasCache = [];
 
-    // Funções auxiliares (mantidas)
+    // FUNÇÕES AUXILIARES
     function normalizeCell(x) { return (x === null || x === undefined) ? '' : String(x).trim(); }
     function toDateOnly(d) { const x = new Date(d); x.setHours(0,0,0,0); return x; }
     function inRange(today, start, end) { const t = toDateOnly(today).getTime(); const s = toDateOnly(start).getTime(); const e = toDateOnly(end).getTime(); return t >= s && t <= e; }
@@ -427,7 +423,7 @@
         const text = await res.text();
         FERIAS_RANGES = parseFeriasCSV(text);
       } catch (e) {
-        console.error('Erro férias:', e);
+        console.error('Erro ao carregar férias:', e);
         FERIAS_RANGES = [];
       }
     }
@@ -488,7 +484,7 @@
       }
     }
 
-    // HORÁRIOS
+    // HORÁRIOS - com TFeriado reconhecido
     function classificarHorario(horario) {
       const raw = normalizeCell(horario).toUpperCase().trim();
       let texto = raw;
@@ -496,6 +492,15 @@
       let tooltip = '';
       let innerHTML = null;
 
+      // TFeriado / Feriado
+      if (raw.includes('TFERIADO') || raw.includes('FERIADO')) {
+        classe = 'feriado';
+        texto = 'Feriado';
+        tooltip = 'Dia feriado';
+        return { classe, texto, tooltip };
+      }
+
+      // CDC
       const cdcMatch = raw.match(/^CDC\s*(\d{1,2})\s*[\/\-]?\s*(\d{1,2})?$/i);
       if (cdcMatch || raw.startsWith('CDC')) {
         classe = 'blue-dark';
@@ -604,7 +609,7 @@
       horarios.forEach((c, j) => {
         const info = classificarHorario(c);
         const td = document.createElement('td');
-        td.style.fontWeight = 'bold'; // negrito em todos
+        td.style.fontWeight = 'bold';
 
         if (info.innerHTML) {
           td.innerHTML = info.innerHTML;
@@ -671,7 +676,7 @@
         verticalDiv.appendChild(block);
       });
 
-      // Animação
+      // Animação staggered
       const cells = [...tbody.querySelectorAll('td'), ...verticalDiv.querySelectorAll('.day-content')];
       cells.forEach((c, i) => {
         c.style.opacity = 0;
